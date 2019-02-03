@@ -5,7 +5,7 @@ import com.progex.tracker.entity.Item;
 import com.progex.tracker.repo.CategoryRepository;
 import com.progex.tracker.service.CategoryService;
 import com.progex.tracker.service.ItemService;
-import com.progex.tracker.uttility.EntityNotFound;
+import com.progex.tracker.exceptions.EntityNotFoundException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +30,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void addItem(int categoryId, Item item) {
         repo.findById(categoryId).ifPresentOrElse(category -> {
-            Item savedItem = itemService.insert(item);
-            category.addItem(savedItem);
-            repo.save(category);
+            Optional<Item> savedItem = itemService.insert(item);
+            if (savedItem.isPresent()) {
+                category.addItem(savedItem.get());
+                repo.save(category);
+            } else {
+                LOGGER.error("Cannot save given item to the database categoryId= {}", categoryId);
+            }
         }, () -> {
             LOGGER.error("Cannot find the category with the categoryId {}", categoryId);
-            throw new EntityNotFound("Cannot find the category with the categoryId  =" + categoryId);
+            throw new EntityNotFoundException("Cannot find the category with the categoryId =" + categoryId);
         });
     }
 
@@ -46,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
             return categoryOptional.get();
         } else {
             LOGGER.warn("Cannot find the Category with the id = {}", categoryId);
-            throw new EntityNotFound("Cannot find the Category with the given id =" + categoryId);
+            throw new EntityNotFoundException("Cannot find the Category with the given id =" + categoryId);
         }
     }
 }

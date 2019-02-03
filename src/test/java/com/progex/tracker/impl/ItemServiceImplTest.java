@@ -3,7 +3,6 @@ package com.progex.tracker.impl;
 import com.progex.tracker.entity.Item;
 import com.progex.tracker.repo.ItemRepository;
 import com.progex.tracker.service.ItemService;
-import com.progex.tracker.uttility.EntityNotFound;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static com.progex.tracker.utility.TestUtils.getMockItem;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -36,24 +37,18 @@ public class ItemServiceImplTest {
 
     @Test
     public void shouldCreateItemWhenInvokingCreate() {
-        Item item = new Item();
-        item.setId(1);
-        item.setName("Rice");
-        item.setCalorie("100kj");
+        Item item = getMockItem();
 
         when(repository.save(item)).thenReturn(item);
 
-        Item savedItem = itemService.insert(item);
-        assertNotNull(savedItem);
-        assertEquals(item, savedItem);
+        Optional<Item> savedItem = itemService.insert(item);
+        assertTrue(savedItem.isPresent());
+        assertEquals(item, savedItem.get());
     }
 
     @Test
     public void shouldReturnItemWhenInvokingGetByIdWithValidId() {
-        Item item = new Item();
-        item.setId(1);
-        item.setName("Rice");
-        item.setCalorie("100kj");
+        Item item = getMockItem();
 
         when(repository.findById(item.getId())).thenReturn(Optional.of(item));
 
@@ -62,8 +57,8 @@ public class ItemServiceImplTest {
         assertEquals(item, returnedItem.get());
     }
 
-    @Test(expected = EntityNotFound.class)
+    @Test
     public void shouldThrowEntityNotFoundWhenInvokingGetByIdWithInvalidId() {
-        itemService.getItemById(1);
+        assertTrue(itemService.getItemById(1).isEmpty());
     }
 }

@@ -6,7 +6,7 @@ import com.progex.tracker.repo.CategoryRepository;
 import com.progex.tracker.repo.ItemRepository;
 import com.progex.tracker.service.CategoryService;
 import com.progex.tracker.service.ItemService;
-import com.progex.tracker.uttility.EntityNotFound;
+import com.progex.tracker.exceptions.EntityNotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +101,7 @@ public class CategoryServiceImplTest {
         assertEquals(category, returnedCategory);
     }
 
-    @Test(expected = EntityNotFound.class)
+    @Test(expected = EntityNotFoundException.class)
     public void shouldThrowEntityNotFoundWhenCallingGetByIdWithInValidCategoryId() {
         categoryService.findById(1);
     }
