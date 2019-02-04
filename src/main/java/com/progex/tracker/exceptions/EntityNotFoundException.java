@@ -3,8 +3,10 @@ package com.progex.tracker.exceptions;
 /**
  * @author indunil
  */
-public class EntityNotFoundException extends RuntimeException {
+public class EntityNotFoundException extends TrackerException {
+
     public EntityNotFoundException(String s) {
-        super(s);
+        super(404, s);
     }
+
 }
