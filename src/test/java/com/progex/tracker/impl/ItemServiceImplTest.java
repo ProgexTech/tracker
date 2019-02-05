@@ -2,6 +2,7 @@ package com.progex.tracker.impl;
 
 import com.progex.tracker.entity.Item;
 import com.progex.tracker.repo.ItemRepository;
+import com.progex.tracker.service.CategoryService;
 import com.progex.tracker.service.ItemService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,9 @@ import static org.mockito.Mockito.when;
 public class ItemServiceImplTest {
     @MockBean
     private ItemRepository repository;
+
+    @MockBean
+    CategoryService categoryService;
 
     @Autowired
     private ItemService itemService;

@@ -9,10 +9,11 @@ import com.progex.tracker.exceptions.EntityNotFoundException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
+@Service
 public class CategoryServiceImpl implements CategoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
@@ -23,8 +24,8 @@ public class CategoryServiceImpl implements CategoryService {
     private ItemService itemService;
 
     @Override
-    public Category save(Category category) {
-        return repo.save(category);
+    public Optional<Category> save(Category category) {
+        return Optional.of(repo.save(category));
     }
 
     @Override
@@ -44,10 +45,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category findById(int categoryId) {
+    public Optional<Category> findById(int categoryId) {
         Optional<Category> categoryOptional = repo.findById(categoryId);
         if (categoryOptional.isPresent()) {
-            return categoryOptional.get();
+            return categoryOptional;
         } else {
             LOGGER.warn("Cannot find the Category with the id = {}", categoryId);
             throw new EntityNotFoundException("Cannot find the Category with the given id =" + categoryId);

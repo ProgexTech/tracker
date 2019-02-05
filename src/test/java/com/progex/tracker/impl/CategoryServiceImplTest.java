@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,9 +63,9 @@ public class CategoryServiceImplTest {
         when(categoryRepository.save(category)).
                 thenReturn(category);
 
-        Category returnedCategory = categoryService.save(category);
-        assertNotNull(returnedCategory);
-        assertEquals(category, returnedCategory);
+        Optional<Category> returnedCategory = categoryService.save(category);
+        assertTrue(returnedCategory.isPresent());
+        assertEquals(category, returnedCategory.get());
     }
 
     @Test
@@ -95,10 +96,10 @@ public class CategoryServiceImplTest {
         when(categoryRepository.findById(category.getId())).
                 thenReturn(Optional.of(category));
 
-        Category returnedCategory = categoryService.findById(category.getId());
+        Optional<Category> returnedCategory = categoryService.findById(category.getId());
 
-        assertNotNull(returnedCategory);
-        assertEquals(category, returnedCategory);
+        assertTrue(returnedCategory.isPresent());
+        assertEquals(category, returnedCategory.get());
     }
 
     @Test(expected = EntityNotFoundException.class)

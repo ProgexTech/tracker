@@ -1,6 +1,7 @@
 package com.progex.tracker.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.progex.tracker.dto.ItemDTO;
 import com.progex.tracker.entity.Item;
 import com.progex.tracker.service.ItemService;
 import org.junit.Before;
@@ -8,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,8 +36,12 @@ public class ItemControllerTest {
     @Mock
     private ItemService itemService;
 
+    @Mock
+    private ModelMapper modelMapper;
+
     @InjectMocks
     private ItemController itemController;
+
 
     private static final String BASE_URL_STR = "/api/items/";
 
@@ -50,14 +56,27 @@ public class ItemControllerTest {
     public void shouldCreateItemWhenProvidingValidItem() throws Exception {
         Item item = getMockItem();
         when(itemService.insert(item)).thenReturn(Optional.of(item));
+        when(itemService.getCategoryById(item.getCategory().getId())).
+                thenReturn(Optional.of(item.getCategory()));
+
+        ItemDTO itemDTO = mapToDTO(item);
+        when(modelMapper.map(any(ItemDTO.class), eq(Item.class))).thenReturn(item);
+        when(modelMapper.map(any(Item.class), eq(ItemDTO.class))).thenReturn(itemDTO);
 
         mockMvc.perform(
                 post(BASE_URL_STR)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(item)))
+                        .content(asJsonString(itemDTO)))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name", is(itemDTO.getName())))
+                .andExpect(jsonPath("$.calorie", is(itemDTO.getCalorie())))
+                .andExpect(jsonPath("$.code", is(itemDTO.getCode())))
+                .andExpect(jsonPath("$.origin", is(itemDTO.getOrigin())))
+                .andExpect(jsonPath("$.description", is(itemDTO.getDescription())))
+                .andExpect(jsonPath("$.id", is(itemDTO.getId())))
                 .andExpect(header().string("location", containsString(BASE_URL_STR + "1")));
 
+        verify(itemService, times(1)).getCategoryById(anyInt());
         verify(itemService, times(1)).insert(any());
         verifyNoMoreInteractions(itemService);
     }
@@ -78,7 +97,8 @@ public class ItemControllerTest {
     public void shouldReturnNoContentWhenProvidingItemIsNotSaved() throws Exception {
         Item item = getMockItem();
 
-        when(itemService.insert(item)).thenReturn(Optional.empty());
+        when(itemService.getCategoryById(item.getCategory().getId())).
+                thenReturn(Optional.empty());
 
         mockMvc.perform(
                 post(BASE_URL_STR)
@@ -86,13 +106,15 @@ public class ItemControllerTest {
                         .content(asJsonString(item)))
                 .andExpect(status().isNoContent());
 
-        verify(itemService, times(1)).insert(any());
+        verify(itemService, times(1)).getCategoryById(anyInt());
         verifyNoMoreInteractions(itemService);
     }
 
     @Test
     public void shouldReturnItemWhenProvidingAValidItemId() throws Exception {
         Item item = getMockItem();
+        when(modelMapper.map(any(Item.class), eq(ItemDTO.class))).thenReturn(mapToDTO(item));
+
         when(itemService.getItemById(item.getId())).thenReturn(Optional.of(item));
         mockMvc.perform(get(BASE_URL_STR + item.getId())
                 .accept(MediaType.APPLICATION_JSON))
@@ -121,5 +143,10 @@ public class ItemControllerTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private ItemDTO mapToDTO(Item item) {
+        ModelMapper mMapper = new ModelMapper();
+        return mMapper.map(item, ItemDTO.class);
     }
 }
