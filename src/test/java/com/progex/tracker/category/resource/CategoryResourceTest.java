@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static com.progex.tracker.item.resource.ItemResourceTest.asJsonString;
@@ -67,7 +68,7 @@ public class CategoryResourceTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is(categoryDTO.getName())))
                 .andExpect(jsonPath("$.id", is(categoryDTO.getId())))
-                .andExpect(jsonPath("$.items",  hasSize(categoryDTO.getItems().size())))
+                .andExpect(jsonPath("$.items", hasSize(categoryDTO.getItems().size())))
                 .andExpect(jsonPath("$.items[0].name", is(categoryDTO.getItems().iterator().next().getName())))
                 .andExpect(jsonPath("$.items[0].calorie", is(categoryDTO.getItems().iterator().next().getCalorie())))
                 .andExpect(header().string("location", containsString(BASE_URL_STR + category.getId())));
@@ -76,29 +77,24 @@ public class CategoryResourceTest {
         verifyNoMoreInteractions(categoryService);
     }
 
-  /*  @Test
-    public void shouldCreateCategoryWhenProvidingValidCategory() throws Exception {
+    @Test
+    public void shouldReturnListOfCategoriesWhenInvokingWithOffsetAndLimit() throws Exception {
         Category category = TestUtils.getMockCategory();
-        when(categoryService.createCategory(category)).thenReturn(Optional.of(category));
+        when(categoryService.getAllCategories(anyInt(), anyInt())).thenReturn(Arrays.asList(category));
 
         CategoryDTO categoryDTO = mapToDTO(category);
         when(modelMapper.map(any(CategoryDTO.class), eq(Category.class))).thenReturn(category);
         when(modelMapper.map(any(Category.class), eq(CategoryDTO.class))).thenReturn(categoryDTO);
 
         mockMvc.perform(
-                post(BASE_URL_STR)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(categoryDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", is(categoryDTO.getName())))
-                .andExpect(jsonPath("$.id", is(categoryDTO.getId())))
-                .andExpect(jsonPath("$.items[0].name", is(categoryDTO.getItems().iterator().next().getName())))
-                .andExpect(jsonPath("$.items[0].calorie", is(categoryDTO.getItems().iterator().next().getCalorie())))
-                .andExpect(header().string("location", containsString(BASE_URL_STR + category.getId())));
+                get("/api/categories?offset=0&limit=10")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(1)));
 
-        verify(categoryService, times(1)).createCategory(any());
+        verify(categoryService, times(1)).getAllCategories(anyInt(), anyInt());
         verifyNoMoreInteractions(categoryService);
-    }*/
+    }
 
     @Test
     public void shouldReturnBadRequestWhenProvidingInvalidContent() throws Exception {

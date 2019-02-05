@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,5 +37,10 @@ public class CategoryServiceImpl implements CategoryService {
             LOGGER.warn("Cannot find the Category with the id = {}", categoryId);
             throw new EntityNotFoundException("Cannot find the Category with the given id =" + categoryId);
         }
+    }
+
+    @Override
+    public List<Category> getAllCategories(int offset, int limit) {
+        return repo.findAllCategories(offset, limit);
     }
 }

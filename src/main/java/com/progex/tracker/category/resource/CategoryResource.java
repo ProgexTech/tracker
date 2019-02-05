@@ -13,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author indunil
@@ -48,7 +50,7 @@ public class CategoryResource {
     }
 
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable int categoryId){
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable int categoryId) {
         Optional<Category> optionalCategory = categoryService.getCategoryById(categoryId);
         if (optionalCategory.isPresent()) {
             CategoryDTO categoryDto = modelMapper.map(optionalCategory.get(), CategoryDTO.class);
@@ -56,5 +58,20 @@ public class CategoryResource {
         }
         LOGGER.warn("No Category found for the given id = {}", categoryId);
         throw new RestControllerEntityNotFoundException("Cannot find the Category with the Id = " + categoryId);
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryDTO>> getAllCategories(@RequestParam(value = "offset", required = true) int offset,
+                                                              @RequestParam(value = "limit", required = true) int limit) {
+
+        LOGGER.info("Retrieving all categories. offset=[{}] limit=[{}].", offset, limit);
+
+        List<Category> allCategories = categoryService.getAllCategories(offset, limit);
+        List<CategoryDTO> categoryDTOS = allCategories.stream().filter(Objects::nonNull)
+                .map(category ->
+                     modelMapper.map(category, CategoryDTO.class)
+                ).collect(Collectors.toList());
+
+        return ResponseEntity.ok(categoryDTOS);
     }
 }
