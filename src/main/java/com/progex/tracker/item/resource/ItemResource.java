@@ -1,10 +1,10 @@
-package com.progex.tracker.controller;
+package com.progex.tracker.item.resource;
 
-import com.progex.tracker.dto.ItemDTO;
-import com.progex.tracker.entity.Category;
-import com.progex.tracker.entity.Item;
+import com.progex.tracker.item.dto.ItemDTO;
+import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.item.entity.Item;
 import com.progex.tracker.exceptions.RestControllerEntityNotFoundException;
-import com.progex.tracker.service.ItemService;
+import com.progex.tracker.item.service.ItemService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-public class ItemController {
+public class ItemResource {
 
     @Autowired
     private ItemService itemService;
@@ -29,7 +29,7 @@ public class ItemController {
     @Autowired
     private ModelMapper modelMapper;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ItemController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemResource.class);
     private static final String BASE_URL_STR = "/api/items/";
 
     @PostMapping("/items")

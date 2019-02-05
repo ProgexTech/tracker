@@ -1,7 +1,7 @@
 package com.progex.tracker.order.dto;
 
 import com.progex.tracker.customer.dto.Customer;
-import com.progex.tracker.entity.Item;
+import com.progex.tracker.item.entity.Item;
 import com.progex.tracker.order.entity.OrderEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;

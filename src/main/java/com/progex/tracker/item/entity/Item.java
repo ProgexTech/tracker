@@ -1,5 +1,6 @@
-package com.progex.tracker.entity;
+package com.progex.tracker.item.entity;
 
+import com.progex.tracker.category.entity.Category;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

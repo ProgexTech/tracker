@@ -1,9 +1,9 @@
-package com.progex.tracker.impl;
+package com.progex.tracker.item.service.impl;
 
-import com.progex.tracker.entity.Item;
-import com.progex.tracker.repo.ItemRepository;
-import com.progex.tracker.service.CategoryService;
-import com.progex.tracker.service.ItemService;
+import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.item.repo.ItemRepository;
+import com.progex.tracker.item.service.ItemService;
+import com.progex.tracker.category.service.CategoryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static com.progex.tracker.utility.TestUtils.getMockItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)

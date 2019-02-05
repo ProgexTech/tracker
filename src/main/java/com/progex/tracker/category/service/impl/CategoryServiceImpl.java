@@ -1,10 +1,10 @@
-package com.progex.tracker.impl;
+package com.progex.tracker.category.service.impl;
 
-import com.progex.tracker.entity.Category;
-import com.progex.tracker.entity.Item;
-import com.progex.tracker.repo.CategoryRepository;
-import com.progex.tracker.service.CategoryService;
-import com.progex.tracker.service.ItemService;
+import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.category.repo.CategoryRepository;
+import com.progex.tracker.category.service.CategoryService;
+import com.progex.tracker.item.service.ItemService;
 import com.progex.tracker.exceptions.EntityNotFoundException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;

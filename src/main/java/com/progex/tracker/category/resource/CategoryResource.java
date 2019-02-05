@@ -1,17 +1,16 @@
-package com.progex.tracker.controller;
+package com.progex.tracker.category.resource;
 
-import com.progex.tracker.dto.CategoryDTO;
-import com.progex.tracker.entity.Category;
-import com.progex.tracker.service.CategoryService;
+import com.progex.tracker.category.dto.CategoryDTO;
+import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.exceptions.RestControllerEntityNotFoundException;
+import com.progex.tracker.item.resource.ItemResource;
+import com.progex.tracker.category.service.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Objects;
@@ -22,7 +21,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-public class CategoryController {
+public class CategoryResource {
 
     @Autowired
     private CategoryService categoryService;
@@ -30,7 +29,7 @@ public class CategoryController {
     @Autowired
     private ModelMapper modelMapper;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ItemController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemResource.class);
     private static final String BASE_URL_STR = "/api/categories/";
 
     @PostMapping("/categories")
@@ -46,5 +45,15 @@ public class CategoryController {
         }
         LOGGER.warn("Failed to insert given category, name = {} ", categoryDTO.getName());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/categories/{categoryId}")
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable int categoryId){
+        Optional<Category> optionalCategory = categoryService.findById(categoryId);
+        if (optionalCategory.isPresent()) {
+            return ResponseEntity.ok().body(modelMapper.map(optionalCategory.get(), CategoryDTO.class));
+        }
+        LOGGER.warn("No Category found for the given id = {}", categoryId);
+        throw new RestControllerEntityNotFoundException("Cannot find the Category with the Id = " + categoryId);
     }
 }

@@ -1,6 +1,6 @@
-package com.progex.tracker.repo;
+package com.progex.tracker.item.repo;
 
-import com.progex.tracker.entity.Item;
+import com.progex.tracker.item.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

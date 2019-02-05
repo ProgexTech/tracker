@@ -1,7 +1,7 @@
 package com.progex.tracker.utility;
 
-import com.progex.tracker.entity.Category;
-import com.progex.tracker.entity.Item;
+import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.item.entity.Item;
 
 public class TestUtils {
 

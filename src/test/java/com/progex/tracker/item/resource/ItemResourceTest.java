@@ -1,9 +1,9 @@
-package com.progex.tracker.controller;
+package com.progex.tracker.item.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.progex.tracker.dto.ItemDTO;
-import com.progex.tracker.entity.Item;
-import com.progex.tracker.service.ItemService;
+import com.progex.tracker.item.dto.ItemDTO;
+import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.item.service.ItemService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,17 +20,18 @@ import java.util.Optional;
 import static com.progex.tracker.utility.TestUtils.getMockItem;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * @author indunil
- */
 @RunWith(SpringJUnit4ClassRunner.class)
-public class ItemControllerTest {
-
+public class ItemResourceTest {
     private MockMvc mockMvc;
 
     @Mock
@@ -40,7 +41,7 @@ public class ItemControllerTest {
     private ModelMapper modelMapper;
 
     @InjectMocks
-    private ItemController itemController;
+    private ItemResource itemController;
 
 
     private static final String BASE_URL_STR = "/api/items/";

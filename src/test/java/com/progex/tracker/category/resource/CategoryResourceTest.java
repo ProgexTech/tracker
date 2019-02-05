@@ -1,11 +1,9 @@
-package com.progex.tracker.controller;
+package com.progex.tracker.category.resource;
 
-import com.progex.tracker.dto.CategoryDTO;
-import com.progex.tracker.dto.ItemDTO;
-import com.progex.tracker.entity.Category;
-import com.progex.tracker.entity.Item;
-import com.progex.tracker.service.CategoryService;
-import com.progex.tracker.service.ItemService;
+import com.progex.tracker.category.dto.CategoryDTO;
+import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.category.service.CategoryService;
+import com.progex.tracker.item.entity.Item;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,26 +17,22 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static com.progex.tracker.controller.ItemControllerTest.asJsonString;
+import static com.progex.tracker.item.resource.ItemResourceTest.asJsonString;
 import static com.progex.tracker.utility.TestUtils.getMockItem;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
  * @author indunil
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-public class CategoryControllerTest {
+public class CategoryResourceTest {
 
     private MockMvc mockMvc;
 
@@ -49,7 +43,7 @@ public class CategoryControllerTest {
     private ModelMapper modelMapper;
 
     @InjectMocks
-    private CategoryController categoryController;
+    private CategoryResource categoryController;
 
     private static final String BASE_URL_STR = "/api/categories/";
 

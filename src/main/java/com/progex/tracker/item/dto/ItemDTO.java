@@ -1,6 +1,6 @@
-package com.progex.tracker.dto;
+package com.progex.tracker.item.dto;
 
-import com.progex.tracker.entity.Category;
+import com.progex.tracker.category.entity.Category;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
