@@ -45,6 +45,8 @@ public class ItemController {
             }
         } else {
             LOGGER.warn("Given Category is not presented, categoryId = {} ", itemDTO.getCategory().getId());
+            throw new RestControllerEntityNotFoundException
+                    ("Invalid Category with categoryId = "+itemDTO.getCategory().getId());
         }
         LOGGER.warn("Failed to create given item, name = {} ", itemDTO.getName());
         return ResponseEntity.noContent().build();

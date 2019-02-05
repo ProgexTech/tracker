@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -33,13 +34,15 @@ public class CategoryController {
     private static final String BASE_URL_STR = "/api/categories/";
 
     @PostMapping("/categories")
-    public ResponseEntity<CategoryDTO> insertCategory(@RequestBody CategoryDTO categoryDTO){
+    public ResponseEntity<CategoryDTO> insertCategory(@RequestBody CategoryDTO categoryDTO) {
         Category category = modelMapper.map(categoryDTO, Category.class);
-        Optional<Category> optionalCategory = categoryService.save(category);
-        if (optionalCategory.isPresent()){
-            return ResponseEntity.created(URI.create(BASE_URL_STR +
-                    optionalCategory.get().getId())).body(modelMapper.
-                    map(optionalCategory.get(), CategoryDTO.class));
+        if (Objects.nonNull(category)) {
+            Optional<Category> optionalCategory = categoryService.save(category);
+            if (optionalCategory.isPresent()) {
+                return ResponseEntity.created(URI.create(BASE_URL_STR +
+                        optionalCategory.get().getId())).body(modelMapper.
+                        map(optionalCategory.get(), CategoryDTO.class));
+            }
         }
         LOGGER.warn("Failed to insert given category, name = {} ", categoryDTO.getName());
         return ResponseEntity.noContent().build();

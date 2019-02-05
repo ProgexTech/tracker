@@ -83,6 +83,32 @@ public class CategoryControllerTest {
         verifyNoMoreInteractions(categoryService);
     }
 
+    @Test
+    public void shouldReturnBadRequestWhenProvidingInvalidContent() throws Exception {
+        mockMvc.perform(
+                post(BASE_URL_STR)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(""))
+                .andExpect(status().isBadRequest());
+
+        verify(categoryService, never()).save(any(Category.class));
+    }
+
+
+    @Test
+    public void shouldReturnNoContentWhenProvidedEntityIsNotSaved() throws Exception {
+        Category category = getMockCategory();
+        when(categoryService.save(any(Category.class))).
+                thenReturn(Optional.empty());
+        mockMvc.perform(
+                post(BASE_URL_STR)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(category)))
+                .andExpect(status().isNoContent());
+
+        verify(categoryService, never()).save(any(Category.class));
+    }
+
     private CategoryDTO mapToDTO(Category category) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(category, CategoryDTO.class);

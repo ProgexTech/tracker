@@ -77,8 +77,30 @@ public class ItemControllerTest {
                 .andExpect(header().string("location", containsString(BASE_URL_STR + "1")));
 
         verify(itemService, times(1)).getCategoryById(anyInt());
-        verify(itemService, times(1)).insert(any());
+        verify(itemService, times(1)).insert(any(Item.class));
         verifyNoMoreInteractions(itemService);
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenProvidingItemWithoutCategory() throws Exception {
+        Item item = getMockItem();
+        when(itemService.insert(item)).thenReturn(Optional.of(item));
+        when(itemService.getCategoryById(item.getCategory().getId())).
+                thenReturn(Optional.of(item.getCategory()));
+
+        ItemDTO itemDTO = mapToDTO(item);
+        itemDTO.setCategory(null);
+        when(modelMapper.map(any(ItemDTO.class), eq(Item.class))).thenReturn(item);
+        when(modelMapper.map(any(Item.class), eq(ItemDTO.class))).thenReturn(itemDTO);
+
+        mockMvc.perform(
+                post(BASE_URL_STR)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(itemDTO)))
+                .andExpect(status().isBadRequest());
+
+        verify(itemService, never()).getCategoryById(anyInt());
+        verify(itemService, never()).insert(any(Item.class));
     }
 
     @Test
@@ -89,12 +111,13 @@ public class ItemControllerTest {
                         .content(""))
                 .andExpect(status().isBadRequest());
 
-        verifyNoMoreInteractions(itemService);
+        verify(itemService, never()).getCategoryById(anyInt());
+        verify(itemService, never()).insert(any(Item.class));
     }
 
 
     @Test
-    public void shouldReturnNoContentWhenProvidingItemIsNotSaved() throws Exception {
+    public void shouldReturnNotFoundWhenProvidedItemIsNotSavedAndCategoryIdIsInvalid() throws Exception {
         Item item = getMockItem();
 
         when(itemService.getCategoryById(item.getCategory().getId())).
@@ -104,7 +127,7 @@ public class ItemControllerTest {
                 post(BASE_URL_STR)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(item)))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNotFound());
 
         verify(itemService, times(1)).getCategoryById(anyInt());
         verifyNoMoreInteractions(itemService);
@@ -126,7 +149,6 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.description", is(item.getDescription())))
                 .andExpect(jsonPath("$.id", is(item.getId())));
     }
-
 
     @Test
     public void shouldReturnNotFoundWhenProvidingAnInValidItemId() throws Exception {
