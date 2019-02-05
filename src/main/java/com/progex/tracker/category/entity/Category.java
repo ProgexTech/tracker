@@ -1,21 +1,22 @@
 package com.progex.tracker.category.entity;
 
 import com.progex.tracker.item.entity.Item;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author indunil
  */
 @Entity
 @Table(name = "category")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Category {
 
@@ -25,13 +26,13 @@ public class Category {
 
     private @NonNull String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Item> items;
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "category")
+    private List<Item> items = new ArrayList<>();
 
     public void addItem(Item item) {
-        if (Objects.isNull(items)){
-            items = new ArrayList<>();
-        }
         items.add(item);
+        if (item.getCategory() != this){
+            item.setCategory(this);
+        }
     }
 }

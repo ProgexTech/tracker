@@ -2,9 +2,9 @@ package com.progex.tracker.category.resource;
 
 import com.progex.tracker.category.dto.CategoryDTO;
 import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.category.service.CategoryService;
 import com.progex.tracker.exceptions.RestControllerEntityNotFoundException;
 import com.progex.tracker.item.resource.ItemResource;
-import com.progex.tracker.category.service.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class CategoryResource {
     public ResponseEntity<CategoryDTO> insertCategory(@RequestBody CategoryDTO categoryDTO) {
         Category category = modelMapper.map(categoryDTO, Category.class);
         if (Objects.nonNull(category)) {
-            Optional<Category> optionalCategory = categoryService.save(category);
+            Optional<Category> optionalCategory = categoryService.createCategory(category);
             if (optionalCategory.isPresent()) {
                 return ResponseEntity.created(URI.create(BASE_URL_STR +
                         optionalCategory.get().getId())).body(modelMapper.
@@ -49,9 +49,10 @@ public class CategoryResource {
 
     @GetMapping("/categories/{categoryId}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable int categoryId){
-        Optional<Category> optionalCategory = categoryService.findById(categoryId);
+        Optional<Category> optionalCategory = categoryService.getCategoryById(categoryId);
         if (optionalCategory.isPresent()) {
-            return ResponseEntity.ok().body(modelMapper.map(optionalCategory.get(), CategoryDTO.class));
+            CategoryDTO categoryDto = modelMapper.map(optionalCategory.get(), CategoryDTO.class);
+            return ResponseEntity.ok().body(categoryDto);
         }
         LOGGER.warn("No Category found for the given id = {}", categoryId);
         throw new RestControllerEntityNotFoundException("Cannot find the Category with the Id = " + categoryId);

@@ -4,11 +4,9 @@ import com.progex.tracker.category.entity.Category;
 import com.progex.tracker.category.repo.CategoryRepository;
 import com.progex.tracker.category.service.CategoryService;
 import com.progex.tracker.exceptions.EntityNotFoundException;
-import com.progex.tracker.item.entity.Item;
 import com.progex.tracker.item.repo.ItemRepository;
 import com.progex.tracker.item.service.ItemService;
 import com.progex.tracker.item.service.impl.ItemServiceImpl;
-import com.progex.tracker.utility.TestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +19,7 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 public class CategoryServiceImplTest {
@@ -64,26 +61,9 @@ public class CategoryServiceImplTest {
         when(categoryRepository.save(category)).
                 thenReturn(category);
 
-        Optional<Category> returnedCategory = categoryService.save(category);
+        Optional<Category> returnedCategory = categoryService.createCategory(category);
         assertTrue(returnedCategory.isPresent());
         assertEquals(category, returnedCategory.get());
-    }
-
-    @Test
-    public void shouldSaveItemWhenAddingItem() {
-        Item item = TestUtils.getMockItem();
-
-        Category category = new Category();
-        category.setId(1);
-        category.setName("category");
-
-        when(itemRepository.save(item)).thenReturn(item);
-        when(categoryRepository.findById(category.getId())).
-                thenReturn(Optional.of(category));
-
-        categoryService.addItem(category.getId(), item);
-
-        verify(categoryRepository, times(1)).save(any());
     }
 
     @Test
@@ -95,7 +75,7 @@ public class CategoryServiceImplTest {
         when(categoryRepository.findById(category.getId())).
                 thenReturn(Optional.of(category));
 
-        Optional<Category> returnedCategory = categoryService.findById(category.getId());
+        Optional<Category> returnedCategory = categoryService.getCategoryById(category.getId());
 
         assertTrue(returnedCategory.isPresent());
         assertEquals(category, returnedCategory.get());
@@ -103,6 +83,6 @@ public class CategoryServiceImplTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void shouldThrowEntityNotFoundWhenCallingGetByIdWithInValidCategoryId() {
-        categoryService.findById(1);
+        categoryService.getCategoryById(1);
     }
 }

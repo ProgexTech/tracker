@@ -1,9 +1,7 @@
 package com.progex.tracker.item.entity;
 
 import com.progex.tracker.category.entity.Category;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,7 +10,8 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "item")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Item {
 
@@ -27,7 +26,7 @@ public class Item {
     @Lob
     private byte[] picture;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 }

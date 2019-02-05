@@ -3,6 +3,8 @@ package com.progex.tracker.utility;
 import com.progex.tracker.category.entity.Category;
 import com.progex.tracker.item.entity.Item;
 
+import java.util.Arrays;
+
 public class TestUtils {
 
     public static Item getMockItem() {
@@ -21,4 +23,12 @@ public class TestUtils {
         return item;
     }
 
+    public static Category getMockCategory() {
+        Item item = getMockItem();
+        Category category = new Category();
+        category.setId(1);
+        category.setName("category");
+        category.setItems(Arrays.asList(item));
+        return category;
+    }
 }

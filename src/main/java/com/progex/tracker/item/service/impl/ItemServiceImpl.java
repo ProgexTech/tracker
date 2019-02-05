@@ -1,10 +1,10 @@
 package com.progex.tracker.item.service.impl;
 
 import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.category.service.CategoryService;
 import com.progex.tracker.item.entity.Item;
 import com.progex.tracker.item.repo.ItemRepository;
 import com.progex.tracker.item.service.ItemService;
-import com.progex.tracker.category.service.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +48,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Optional<Category> getCategoryById(int categoryId) {
-        return categoryService.findById(categoryId);
+        return categoryService.getCategoryById(categoryId);
     }
 }
