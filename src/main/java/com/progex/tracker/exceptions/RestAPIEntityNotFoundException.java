@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author indunil
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class RestControllerEntityNotFoundException extends RuntimeException{
-    public RestControllerEntityNotFoundException(String msg){
+public class RestAPIEntityNotFoundException extends RuntimeException{
+    public RestAPIEntityNotFoundException(String msg){
         super(msg);
     }
 }

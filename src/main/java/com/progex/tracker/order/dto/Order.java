@@ -1,15 +1,13 @@
 package com.progex.tracker.order.dto;
 
 import com.progex.tracker.customer.dto.Customer;
-import com.progex.tracker.entity.Item;
+import com.progex.tracker.item.entity.Item;
 import com.progex.tracker.order.entity.OrderEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data

@@ -1,8 +1,10 @@
-package com.progex.tracker.impl;
+package com.progex.tracker.item.service.impl;
 
-import com.progex.tracker.entity.Item;
-import com.progex.tracker.repo.ItemRepository;
-import com.progex.tracker.service.ItemService;
+import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.category.service.CategoryService;
+import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.item.repo.ItemRepository;
+import com.progex.tracker.item.service.ItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private ItemRepository itemRepository;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Override
     public Optional<Item> insert(Item item) {
@@ -39,5 +44,15 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item update(Item item) {
         return itemRepository.save(item);
+    }
+
+    @Override
+    public Optional<Category> getCategoryById(int categoryId) {
+        return categoryService.getCategoryById(categoryId);
+    }
+
+    @Override
+    public void deleteById(int id) {
+        itemRepository.deleteById(id);
     }
 }

@@ -1,8 +1,9 @@
-package com.progex.tracker.impl;
+package com.progex.tracker.item.service.impl;
 
-import com.progex.tracker.entity.Item;
-import com.progex.tracker.repo.ItemRepository;
-import com.progex.tracker.service.ItemService;
+import com.progex.tracker.category.service.CategoryService;
+import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.item.repo.ItemRepository;
+import com.progex.tracker.item.service.ItemService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,16 @@ import java.util.Optional;
 import static com.progex.tracker.utility.TestUtils.getMockItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 public class ItemServiceImplTest {
     @MockBean
     private ItemRepository repository;
+
+    @MockBean
+    CategoryService categoryService;
 
     @Autowired
     private ItemService itemService;
@@ -60,5 +65,11 @@ public class ItemServiceImplTest {
     @Test
     public void shouldThrowEntityNotFoundWhenInvokingGetByIdWithInvalidId() {
         assertTrue(itemService.getItemById(1).isEmpty());
+    }
+
+    @Test
+    public void shouldDeleteItemWhenCallingWithAValidId(){
+        itemService.deleteById(1);
+        verify(repository, times(1)).deleteById(anyInt());
     }
 }
