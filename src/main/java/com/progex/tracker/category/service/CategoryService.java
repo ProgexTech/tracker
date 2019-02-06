@@ -13,4 +13,8 @@ public interface CategoryService {
     Optional<Category> getCategoryById(int categoryId);
 
     List<Category> getAllCategories(int offset, int limit);
+
+    void deleteById(int categoryId);
+
+    Optional<Category> update(Category category);
 }

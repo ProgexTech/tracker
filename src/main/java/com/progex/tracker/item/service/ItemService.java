@@ -16,4 +16,6 @@ public interface ItemService {
     Item update(Item item);
 
     Optional<Category> getCategoryById(int categoryId);
+
+    void deleteById(int id);
 }

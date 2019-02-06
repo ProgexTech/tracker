@@ -1,9 +1,9 @@
 package com.progex.tracker.item.resource;
 
-import com.progex.tracker.item.dto.ItemDTO;
 import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.exceptions.Exceptions;
+import com.progex.tracker.item.dto.ItemDTO;
 import com.progex.tracker.item.entity.Item;
-import com.progex.tracker.exceptions.RestControllerEntityNotFoundException;
 import com.progex.tracker.item.service.ItemService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class ItemResource {
     private static final String BASE_URL_STR = "/api/items/";
 
     @PostMapping("/items")
-    public ResponseEntity<ItemDTO> insertItem(@Validated @RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<ItemDTO> createItem(@Validated @RequestBody ItemDTO itemDTO) {
         Optional<Category> optionalCategory = itemService.getCategoryById(itemDTO.getCategory().getId());
         if (optionalCategory.isPresent()) {
             Item item = modelMapper.map(itemDTO, Item.class);
@@ -45,20 +45,35 @@ public class ItemResource {
             }
         } else {
             LOGGER.warn("Given Category is not presented, categoryId = {} ", itemDTO.getCategory().getId());
-            throw new RestControllerEntityNotFoundException
-                    ("Invalid Category with categoryId = "+itemDTO.getCategory().getId());
+            throw Exceptions.getCategoryNotFoundException(itemDTO.getCategory().getId());
         }
         LOGGER.warn("Failed to create given item, name = {} ", itemDTO.getName());
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/items/{itemId}")
-    public ResponseEntity<ItemDTO> retrieveItem(@PathVariable int itemId) {
-        Optional<Item> optionalItem = itemService.getItemById(itemId);
-        if (optionalItem.isPresent()) {
-            return ResponseEntity.ok().body(modelMapper.map(optionalItem.get(), ItemDTO.class));
-        }
-        LOGGER.warn("No Item found for the given id = {}", itemId);
-        throw new RestControllerEntityNotFoundException("Cannot find the Item with the Id = " + itemId);
+    public ResponseEntity<ItemDTO> getItemById(@PathVariable int itemId) {
+
+        return itemService.getItemById(itemId).map(
+                item -> ResponseEntity.ok().body(modelMapper.map(item, ItemDTO.class))
+        ).orElseThrow(
+                () -> {
+                    LOGGER.warn("No Item found for the given id = {}", itemId);
+                    throw Exceptions.getItemNotFoundException(itemId);
+                }
+        );
+    }
+
+    @DeleteMapping("/items/{itemId}")
+    public ResponseEntity<Object> deleteItemById(@PathVariable int itemId) {
+        return itemService.getItemById(itemId).map(item -> {
+            itemService.deleteById(itemId);
+            return ResponseEntity.ok().build();
+        }).orElseThrow(
+                () -> {
+                    LOGGER.warn("No Item found for the given id={}", itemId);
+                    throw Exceptions.getItemNotFoundException(itemId);
+                }
+        );
     }
 }

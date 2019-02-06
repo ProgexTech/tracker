@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -23,8 +24,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -97,6 +97,24 @@ public class CategoryResourceTest {
     }
 
     @Test
+    public void shouldNoContentWhenNoEntriesAvailableForTheGivenOffsetAndLimit() throws Exception {
+        Category category = TestUtils.getMockCategory();
+        when(categoryService.getAllCategories(anyInt(), anyInt())).thenReturn(new ArrayList<>());
+
+        CategoryDTO categoryDTO = mapToDTO(category);
+        when(modelMapper.map(any(CategoryDTO.class), eq(Category.class))).thenReturn(category);
+        when(modelMapper.map(any(Category.class), eq(CategoryDTO.class))).thenReturn(categoryDTO);
+
+        mockMvc.perform(
+                get("/api/categories?offset=0&limit=10")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        verify(categoryService, times(1)).getAllCategories(anyInt(), anyInt());
+        verifyNoMoreInteractions(categoryService);
+    }
+
+    @Test
     public void shouldReturnBadRequestWhenProvidingInvalidContent() throws Exception {
         mockMvc.perform(
                 post(BASE_URL_STR)
@@ -142,6 +160,33 @@ public class CategoryResourceTest {
         mockMvc.perform(get(BASE_URL_STR + "1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldReturnOKWhenSuccessfullyDeleteGivenCategory() throws Exception {
+        Category category = TestUtils.getMockCategory();
+        when(categoryService.getCategoryById(anyInt())).thenReturn(Optional.of(category));
+
+        mockMvc.perform(
+                delete(BASE_URL_STR+"1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(categoryService, times(1)).getCategoryById(anyInt());
+        verify(categoryService, times(1)).deleteById(anyInt());
+        verifyNoMoreInteractions(categoryService);
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenGivenCategoryIsNotPresented() throws Exception {
+        mockMvc.perform(
+                delete(BASE_URL_STR+"1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        verify(categoryService, times(1)).getCategoryById(anyInt());
+        verify(categoryService, never()).deleteById(anyInt());
+        verifyNoMoreInteractions(categoryService);
     }
 
     private CategoryDTO mapToDTO(Category category) {

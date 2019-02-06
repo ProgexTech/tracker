@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.progex.tracker.item.dto.ItemDTO;
 import com.progex.tracker.item.entity.Item;
 import com.progex.tracker.item.service.ItemService;
+import com.progex.tracker.utility.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +23,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -154,6 +154,33 @@ public class ItemResourceTest {
                 .andExpect(status().isNotFound());
     }
 
+
+    @Test
+    public void shouldReturnOKWhenSuccessfullyDeleteGivenItem() throws Exception {
+        Item item = TestUtils.getMockItem();
+        when(itemService.getItemById(anyInt())).thenReturn(Optional.of(item));
+
+        mockMvc.perform(
+                delete(BASE_URL_STR+"1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(itemService, times(1)).getItemById(anyInt());
+        verify(itemService, times(1)).deleteById(anyInt());
+        verifyNoMoreInteractions(itemService);
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenGivenItemIsNotPresented() throws Exception {
+        mockMvc.perform(
+                delete(BASE_URL_STR+"1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        verify(itemService, times(1)).getItemById(anyInt());
+        verify(itemService, never()).deleteById(anyInt());
+        verifyNoMoreInteractions(itemService);
+    }
     public static String asJsonString(final Object obj) {
         try {
             final ObjectMapper mapper = new ObjectMapper();

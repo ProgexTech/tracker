@@ -50,4 +50,9 @@ public class ItemServiceImpl implements ItemService {
     public Optional<Category> getCategoryById(int categoryId) {
         return categoryService.getCategoryById(categoryId);
     }
+
+    @Override
+    public void deleteById(int id) {
+        itemRepository.deleteById(id);
+    }
 }

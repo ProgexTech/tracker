@@ -43,4 +43,14 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getAllCategories(int offset, int limit) {
         return repo.findAllCategories(offset, limit);
     }
+
+    @Override
+    public void deleteById(int categoryId) {
+        repo.deleteById(categoryId);
+    }
+
+    @Override
+    public Optional<Category> update(Category category) {
+        return Optional.of(repo.save(category));
+    }
 }

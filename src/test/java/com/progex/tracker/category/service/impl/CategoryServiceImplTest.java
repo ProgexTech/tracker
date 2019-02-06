@@ -19,7 +19,8 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 public class CategoryServiceImplTest {
@@ -84,5 +85,11 @@ public class CategoryServiceImplTest {
     @Test(expected = EntityNotFoundException.class)
     public void shouldThrowEntityNotFoundWhenCallingGetByIdWithInValidCategoryId() {
         categoryService.getCategoryById(1);
+    }
+
+    @Test
+    public void shouldDeleteCategoryWhenWithAValidId(){
+        categoryService.deleteById(1);
+        verify(categoryRepository, times(1)).deleteById(anyInt());
     }
 }

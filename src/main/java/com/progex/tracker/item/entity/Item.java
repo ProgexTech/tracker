@@ -1,9 +1,13 @@
 package com.progex.tracker.item.entity;
 
 import com.progex.tracker.category.entity.Category;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 /**
  * @author indunil
@@ -23,6 +27,10 @@ public class Item {
     private String origin;
     private String description;
     private String code;
+    private boolean isAvailable;
+    private int pax;
+    @Column(name="price", columnDefinition="Decimal(10,2) default '0.00'")
+    private BigDecimal price;
     @Lob
     private byte[] picture;
 

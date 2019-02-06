@@ -9,6 +9,7 @@ import org.mapstruct.ReportingPolicy;
 
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -23,5 +24,8 @@ public class ItemDTO {
     private String origin;
     private String description;
     private String code;
+    private boolean isAvailable;
+    private int pax;
+    private BigDecimal price;
     private byte[] picture;
 }
