@@ -194,4 +194,90 @@ public class CategoryResourceTest {
         return modelMapper.map(category, CategoryDTO.class);
     }
 
+    @Test
+    public void shouldUpdateCategoryWhenProvidingValidCategoryIdAndContent() throws Exception {
+        Category category = TestUtils.getMockCategory();
+
+        Category toBeUpdated = TestUtils.getMockCategory();
+        toBeUpdated.setName("updated");
+        CategoryDTO toBeUpdatedDto = mapToDTO(toBeUpdated);
+        CategoryDTO categoryDTO = mapToDTO(category);
+
+        when(modelMapper.map(any(CategoryDTO.class), eq(Category.class))).thenReturn(category);
+        when(modelMapper.map(any(Category.class), eq(CategoryDTO.class))).thenReturn(toBeUpdatedDto);
+
+
+        when(categoryService.getCategoryById(anyInt())).thenReturn(Optional.of(category));
+        when(categoryService.update(any(Category.class))).thenReturn(Optional.of(toBeUpdated));
+
+        mockMvc.perform(
+                put(BASE_URL_STR+category.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(categoryDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(toBeUpdatedDto.getName())))
+                .andExpect(jsonPath("$.id", is(toBeUpdatedDto.getId())))
+                .andExpect(jsonPath("$.items", hasSize(toBeUpdatedDto.getItems().size())))
+                .andExpect(jsonPath("$.items[0].name", is(toBeUpdatedDto.getItems().iterator().next().getName())))
+                .andExpect(jsonPath("$.items[0].calorie", is(toBeUpdatedDto.getItems().iterator().next().getCalorie())));
+
+        verify(categoryService, times(1)).getCategoryById(anyInt());
+        verify(categoryService, times(1)).update(any(Category.class));
+        verifyNoMoreInteractions(categoryService);
+    }
+
+    @Test
+    public void shouldReturnNoContentWhenFailedToSaveTheGivenEntity() throws Exception {
+        Category category = TestUtils.getMockCategory();
+
+        Category toBeUpdated = TestUtils.getMockCategory();
+        toBeUpdated.setName("updated");
+
+        CategoryDTO toBeUpdatedDto = mapToDTO(toBeUpdated);
+        CategoryDTO categoryDTO = mapToDTO(category);
+
+        when(modelMapper.map(any(CategoryDTO.class), eq(Category.class))).thenReturn(category);
+        when(modelMapper.map(any(Category.class), eq(CategoryDTO.class))).thenReturn(toBeUpdatedDto);
+
+
+        when(categoryService.getCategoryById(anyInt())).thenReturn(Optional.of(category));
+        when(categoryService.update(any(Category.class))).thenReturn(Optional.empty());
+
+        mockMvc.perform(
+                put(BASE_URL_STR+category.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(categoryDTO)))
+                .andExpect(status().isNoContent());
+
+        verify(categoryService, times(1)).getCategoryById(anyInt());
+        verify(categoryService, times(1)).update(any(Category.class));
+        verifyNoMoreInteractions(categoryService);
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenFailedToFindTheGivenCategory() throws Exception {
+        Category category = TestUtils.getMockCategory();
+
+        Category toBeUpdated = TestUtils.getMockCategory();
+        toBeUpdated.setName("updated");
+        CategoryDTO toBeUpdatedDto = mapToDTO(toBeUpdated);
+        CategoryDTO categoryDTO = mapToDTO(category);
+
+        when(modelMapper.map(any(CategoryDTO.class), eq(Category.class))).thenReturn(category);
+        when(modelMapper.map(any(Category.class), eq(CategoryDTO.class))).thenReturn(toBeUpdatedDto);
+
+
+        when(categoryService.getCategoryById(anyInt())).thenReturn(Optional.empty());
+        when(categoryService.update(any(Category.class))).thenReturn(Optional.empty());
+
+        mockMvc.perform(
+                put(BASE_URL_STR+category.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(categoryDTO)))
+                .andExpect(status().isNotFound());
+
+        verify(categoryService, times(1)).getCategoryById(anyInt());
+        verify(categoryService, never()).update(any(Category.class));
+        verifyNoMoreInteractions(categoryService);
+    }
 }
