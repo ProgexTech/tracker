@@ -1,7 +1,7 @@
 package com.progex.tracker.order.entity;
 
-import com.progex.tracker.customer.entity.CustomerEntity;
-import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.diningTable.entity.DiningTableEntity;
+import com.progex.tracker.orderItem.entity.OrderItemEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,12 +19,12 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
-    @ManyToMany
-    private List<Item> itemList;
+    @OneToMany
+    private List<OrderItemEntity> orderItems;
 
     @ManyToOne
-    private CustomerEntity customer;
+    private DiningTableEntity diningTable;
 
-    private LocalDateTime orderDate;
+    private LocalDateTime createdTime;
 
 }
