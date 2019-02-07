@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity savedUser = userRepository.save(userEntity);
 
-        LOGGER.info("<== User updated for id: [{}].", savedUser.getName(), savedUser.getId());
+        LOGGER.info("<== User updated for id: [{}] name: [{}].", savedUser.getId(), savedUser.getName());
 
         return savedUser;
 
