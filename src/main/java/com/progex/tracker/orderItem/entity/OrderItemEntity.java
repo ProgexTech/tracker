@@ -24,6 +24,7 @@ public class OrderItemEntity {
     @ManyToOne
     private OrderEntity orderEntity;
 
+    private double quantity;
     private LocalDateTime createdTime;
 
 }

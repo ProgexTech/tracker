@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class OrderItem {
 
     private long id;
+    private double quantity;
     private ItemDTO item;
     private Order order;
     private LocalDateTime createdTime;
