@@ -2,16 +2,17 @@ package com.progex.tracker.customer.dto;
 
 import com.progex.tracker.customer.entity.CustomerEntity;
 import com.progex.tracker.order.dto.Order;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Customer {
 
     private long id;

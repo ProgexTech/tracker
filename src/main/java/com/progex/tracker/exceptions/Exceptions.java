@@ -6,6 +6,10 @@ public class Exceptions {
         return new EntityNotFoundException("Customer not found for id: " + customerId);
     }
 
+    public static EntityNotFoundException getUserNotFoundException(long userId) {
+        return new EntityNotFoundException("User not found for id: " + userId);
+    }
+
     public static RestAPIEntityNotFoundException getCategoryNotFoundException(int categoryId) {
         return new RestAPIEntityNotFoundException("Category not found for id: " + categoryId);
     }

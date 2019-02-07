@@ -3,15 +3,16 @@ package com.progex.tracker.order.dto;
 import com.progex.tracker.customer.dto.Customer;
 import com.progex.tracker.item.entity.Item;
 import com.progex.tracker.order.entity.OrderEntity;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
     private long id;
