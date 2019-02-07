@@ -1,6 +1,5 @@
 package com.progex.tracker.user.service.impl;
 
-import com.progex.tracker.customer.entity.CustomerEntity;
 import com.progex.tracker.exceptions.Exceptions;
 import com.progex.tracker.user.dto.User;
 import com.progex.tracker.user.entity.UserEntity;
@@ -9,9 +8,11 @@ import com.progex.tracker.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
