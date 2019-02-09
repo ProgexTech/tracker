@@ -71,7 +71,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         CustomerEntity savedCustomer = customerRepository.save(customerEntity);
 
-        LOGGER.info("<== Customer updated for id: [{}].", savedCustomer.getName(), savedCustomer.getId());
+        LOGGER.info("<== Customer updated for id: [{}], name: [{}].", savedCustomer.getId(), savedCustomer.getName());
 
         return savedCustomer;
     }

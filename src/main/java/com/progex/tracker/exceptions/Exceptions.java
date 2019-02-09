@@ -2,8 +2,15 @@ package com.progex.tracker.exceptions;
 
 public class Exceptions {
 
+    private Exceptions() {
+    }
+
     public static EntityNotFoundException getCustomerNotFoundException(long customerId) {
         return new EntityNotFoundException("Customer not found for id: " + customerId);
+    }
+
+    public static EntityNotFoundException getUserNotFoundException(long userId) {
+        return new EntityNotFoundException("User not found for id: " + userId);
     }
 
     public static RestAPIEntityNotFoundException getCategoryNotFoundException(int categoryId) {

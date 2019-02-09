@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TrackerAPIError {
 
+    static final long serialVersionUID = 1L;
+
     private int errorCode;
     private String errorMessage;
 
