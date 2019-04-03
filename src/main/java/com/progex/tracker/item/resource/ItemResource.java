@@ -32,7 +32,7 @@ public class ItemResource {
 
     @PostMapping("/items")
     public ResponseEntity<Item> createItem(@Validated @RequestBody Item item) {
-         return  itemService.getCategoryById(item.getCategoryEntity()
+        return itemService.getCategoryById(item.getCategoryEntity()
                 .getId()).map(categoryEntity -> {
             ItemEntity itemEntity = modelMapper.map(item, ItemEntity.class);
             itemEntity.setCategoryEntity(categoryEntity);
@@ -69,5 +69,16 @@ public class ItemResource {
                     throw Exceptions.getItemNotFoundException(itemId);
                 }
         );
+    }
+
+    @PutMapping("/items/{itemId}")
+    public ResponseEntity<Item> updateItem(@RequestBody Item item, @PathVariable int itemId) {
+        if (itemService.getItemById(itemId).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        item.setId(itemId);
+        ItemEntity itemEntity = modelMapper.map(item, ItemEntity.class);
+        itemEntity = itemService.update(itemEntity);
+        return ResponseEntity.ok(modelMapper.map(itemEntity, Item.class));
     }
 }

@@ -181,6 +181,29 @@ public class ItemResourceTest {
         verify(itemService, never()).deleteById(anyInt());
         verifyNoMoreInteractions(itemService);
     }
+
+    @Test
+    public void shouldUpdateItemWhenProvidingValidItem() throws Exception {
+        ItemEntity itemEntity = getMockItem();
+        when(itemService.getItemById(anyInt())).thenReturn(Optional.of(itemEntity));
+    /*    when(itemService.getCategoryById(itemEntity.getCategoryEntity().getId())).
+                thenReturn(Optional.of(itemEntity.getCategoryEntity()));*/
+
+        Item item = mapToDTO(itemEntity);
+        when(modelMapper.map(any(Item.class), eq(ItemEntity.class))).thenReturn(itemEntity);
+        when(modelMapper.map(any(ItemEntity.class), eq(Item.class))).thenReturn(item);
+
+        mockMvc.perform(
+                put(BASE_URL_STR+"1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(item)))
+                .andExpect(status().isOk());
+
+        verify(itemService, times(1)).getItemById(anyInt());
+        verify(itemService, times(1)).update(any(ItemEntity.class));
+        verifyNoMoreInteractions(itemService);
+    }
+
     public static String asJsonString(final Object obj) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
