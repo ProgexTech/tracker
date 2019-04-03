@@ -1,34 +1,34 @@
 package com.progex.tracker.utility;
 
-import com.progex.tracker.category.entity.Category;
-import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.category.entity.CategoryEntity;
+import com.progex.tracker.item.entity.ItemEntity;
 
 import java.util.Arrays;
 
 public class TestUtils {
 
-    public static Item getMockItem() {
-        Category category = new Category();
-        category.setId(1);
-        category.setName("category");
+    public static ItemEntity getMockItem() {
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(1);
+        categoryEntity.setName("categoryEntity");
 
-        Item item = new Item();
-        item.setId(1);
-        item.setCategory(category);
-        item.setName("name");
-        item.setCalorie("calories");
-        item.setDescription("description");
-        item.setOrigin("origin");
-        item.setCode("code");
-        return item;
+        ItemEntity itemEntity = new ItemEntity();
+        itemEntity.setId(1);
+        itemEntity.setCategoryEntity(categoryEntity);
+        itemEntity.setName("name");
+        itemEntity.setCalorie("calories");
+        itemEntity.setDescription("description");
+        itemEntity.setOrigin("origin");
+        itemEntity.setCode("code");
+        return itemEntity;
     }
 
-    public static Category getMockCategory() {
-        Item item = getMockItem();
-        Category category = new Category();
-        category.setId(1);
-        category.setName("category");
-        category.setItems(Arrays.asList(item));
-        return category;
+    public static CategoryEntity getMockCategory() {
+        ItemEntity itemEntity = getMockItem();
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(1);
+        categoryEntity.setName("categoryEntity");
+        categoryEntity.setItemEntities(Arrays.asList(itemEntity));
+        return categoryEntity;
     }
 }

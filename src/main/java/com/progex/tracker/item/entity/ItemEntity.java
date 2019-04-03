@@ -1,6 +1,6 @@
 package com.progex.tracker.item.entity;
 
-import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.category.entity.CategoryEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -13,11 +13,11 @@ import java.math.BigDecimal;
  * @author indunil
  */
 @Entity
-@Table(name = "item")
+@Table(name = "itemEntity")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Item {
+public class ItemEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,5 +36,5 @@ public class Item {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    private Category category;
+    private CategoryEntity categoryEntity;
 }

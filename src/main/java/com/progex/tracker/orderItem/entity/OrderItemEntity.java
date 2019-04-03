@@ -1,6 +1,6 @@
 package com.progex.tracker.orderItem.entity;
 
-import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.item.entity.ItemEntity;
 import com.progex.tracker.order.entity.OrderEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class OrderItemEntity {
     private long id;
 
     @ManyToOne
-    private Item item;
+    private ItemEntity itemEntity;
 
     @ManyToOne
     private OrderEntity orderEntity;

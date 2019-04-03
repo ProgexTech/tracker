@@ -1,7 +1,7 @@
 package com.progex.tracker.item.service.impl;
 
 import com.progex.tracker.category.service.CategoryService;
-import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.item.entity.ItemEntity;
 import com.progex.tracker.item.repo.ItemRepository;
 import com.progex.tracker.item.service.ItemService;
 import org.junit.Test;
@@ -15,13 +15,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static com.progex.tracker.utility.TestUtils.getMockItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-public class ItemServiceImplTest {
+public class ItemEntityServiceImplTest {
     @MockBean
     private ItemRepository repository;
 
@@ -42,24 +41,24 @@ public class ItemServiceImplTest {
 
     @Test
     public void shouldCreateItemWhenInvokingCreate() {
-        Item item = getMockItem();
+        ItemEntity itemEntity = getMockItem();
 
-        when(repository.save(item)).thenReturn(item);
+        when(repository.save(itemEntity)).thenReturn(itemEntity);
 
-        Optional<Item> savedItem = itemService.insert(item);
-        assertTrue(savedItem.isPresent());
-        assertEquals(item, savedItem.get());
+        ItemEntity savedItem = itemService.insert(itemEntity);
+        assertNotNull(savedItem);
+        assertEquals(itemEntity, savedItem);
     }
 
     @Test
     public void shouldReturnItemWhenInvokingGetByIdWithValidId() {
-        Item item = getMockItem();
+        ItemEntity itemEntity = getMockItem();
 
-        when(repository.findById(item.getId())).thenReturn(Optional.of(item));
+        when(repository.findById(itemEntity.getId())).thenReturn(Optional.of(itemEntity));
 
-        Optional<Item> returnedItem = itemService.getItemById(item.getId());
+        Optional<ItemEntity> returnedItem = itemService.getItemById(itemEntity.getId());
         assertTrue(returnedItem.isPresent());
-        assertEquals(item, returnedItem.get());
+        assertEquals(itemEntity, returnedItem.get());
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.progex.tracker.category.service.impl;
 
-import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.category.entity.CategoryEntity;
 import com.progex.tracker.category.repo.CategoryRepository;
 import com.progex.tracker.category.service.CategoryService;
 import com.progex.tracker.exceptions.EntityNotFoundException;
@@ -19,11 +19,12 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-public class CategoryServiceImplTest {
+public class CategoryEntityServiceImplTest {
 
     @MockBean
     private ItemRepository itemRepository;
@@ -55,36 +56,31 @@ public class CategoryServiceImplTest {
 
     @Test
     public void shouldReturnCategoryWhenSaving() {
-        Category category = new Category();
-        category.setId(1);
-        category.setName("category1");
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(1);
+        categoryEntity.setName("category1");
 
-        when(categoryRepository.save(category)).
-                thenReturn(category);
+        when(categoryRepository.save(categoryEntity)).
+                thenReturn(categoryEntity);
 
-        Optional<Category> returnedCategory = categoryService.createCategory(category);
-        assertTrue(returnedCategory.isPresent());
-        assertEquals(category, returnedCategory.get());
+        CategoryEntity returnedCategoryEntity = categoryService.createCategory(categoryEntity);
+        assertNotNull(returnedCategoryEntity);
+        assertEquals(categoryEntity, returnedCategoryEntity);
     }
 
     @Test
     public void shouldReturnCategoryWhenCallingGetByIdWithAValidCategoryId() {
-        Category category = new Category();
-        category.setId(1);
-        category.setName("category");
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(1);
+        categoryEntity.setName("categoryEntity");
 
-        when(categoryRepository.findById(category.getId())).
-                thenReturn(Optional.of(category));
+        when(categoryRepository.findById(categoryEntity.getId())).
+                thenReturn(Optional.of(categoryEntity));
 
-        Optional<Category> returnedCategory = categoryService.getCategoryById(category.getId());
+        Optional<CategoryEntity> returnedCategory = categoryService.getCategoryById(categoryEntity.getId());
 
         assertTrue(returnedCategory.isPresent());
-        assertEquals(category, returnedCategory.get());
-    }
-
-    @Test(expected = EntityNotFoundException.class)
-    public void shouldThrowEntityNotFoundWhenCallingGetByIdWithInValidCategoryId() {
-        categoryService.getCategoryById(1);
+        assertEquals(categoryEntity, returnedCategory.get());
     }
 
     @Test
