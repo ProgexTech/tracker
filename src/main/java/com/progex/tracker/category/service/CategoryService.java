@@ -1,6 +1,6 @@
 package com.progex.tracker.category.service;
 
-import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.category.entity.CategoryEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,13 +8,15 @@ import java.util.Optional;
 public interface CategoryService {
 
 
-    Optional<Category> createCategory(Category category);
+    CategoryEntity createCategory(CategoryEntity categoryEntity);
 
-    Optional<Category> getCategoryById(int categoryId);
+    Optional<CategoryEntity> getCategoryById(int categoryId);
 
-    List<Category> getAllCategories(int offset, int limit);
+    List<CategoryEntity> getAllCategories(int offset, int limit);
 
     void deleteById(int categoryId);
 
-    Optional<Category> update(Category category);
+    CategoryEntity update(int categoryId, CategoryEntity categoryEntity);
+
+    boolean isExists(int categoryId);
 }

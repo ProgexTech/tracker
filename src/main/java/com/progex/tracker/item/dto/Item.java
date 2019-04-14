@@ -1,6 +1,7 @@
 package com.progex.tracker.item.dto;
 
-import com.progex.tracker.category.entity.Category;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.progex.tracker.category.entity.CategoryEntity;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -14,11 +15,12 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public class ItemDTO {
+public class Item {
     @Id
     private int id;
+    @JsonProperty("category")
     @NotNull
-    private Category category;
+    private CategoryEntity categoryEntity;
     private @NonNull String name;
     private String calorie;
     private String origin;

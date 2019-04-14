@@ -1,12 +1,10 @@
 package com.progex.tracker.item.service.impl;
 
-import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.category.entity.CategoryEntity;
 import com.progex.tracker.category.service.CategoryService;
-import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.item.entity.ItemEntity;
 import com.progex.tracker.item.repo.ItemRepository;
 import com.progex.tracker.item.service.ItemService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +16,6 @@ import java.util.Optional;
 
 @Service
 public class ItemServiceImpl implements ItemService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ItemServiceImpl.class);
-
     @Autowired
     private ItemRepository itemRepository;
 
@@ -27,27 +23,22 @@ public class ItemServiceImpl implements ItemService {
     CategoryService categoryService;
 
     @Override
-    public Optional<Item> insert(Item item) {
-        return Optional.of(itemRepository.save(item));
+    public ItemEntity insert(ItemEntity itemEntity) {
+        return itemRepository.save(itemEntity);
     }
 
     @Override
-    public Optional<Item> getItemById(int id) {
-        Optional<Item> itemOptional = itemRepository.findById(id);
-        if (itemOptional.isPresent()) {
-            return itemOptional;
-        }
-        LOGGER.warn("Cannot find the Item with the id = {}", id);
-        return Optional.empty();
+    public Optional<ItemEntity> getItemById(int id) {
+        return itemRepository.findById(id);
     }
 
     @Override
-    public Item update(Item item) {
-        return itemRepository.save(item);
+    public ItemEntity update(ItemEntity itemEntity) {
+        return itemRepository.save(itemEntity);
     }
 
     @Override
-    public Optional<Category> getCategoryById(int categoryId) {
+    public Optional<CategoryEntity> getCategoryById(int categoryId) {
         return categoryService.getCategoryById(categoryId);
     }
 

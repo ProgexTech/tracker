@@ -1,6 +1,6 @@
 package com.progex.tracker.orderItem.dto;
 
-import com.progex.tracker.item.dto.ItemDTO;
+import com.progex.tracker.item.dto.Item;
 import com.progex.tracker.order.dto.Order;
 import com.progex.tracker.orderItem.entity.OrderItemEntity;
 import lombok.AllArgsConstructor;
@@ -21,15 +21,15 @@ public class OrderItem {
 
     private long id;
     private double quantity;
-    private ItemDTO item;
+    private Item item;
     private Order order;
     private LocalDateTime createdTime;
 
-    public static OrderItem toDto(OrderItemEntity orderItemEntity) {
+    private static OrderItem toDto(OrderItemEntity orderItemEntity) {
         OrderItem orderItem = new OrderItem();
 
         orderItem.setId(orderItemEntity.getId());
-        //orderItem.setItem(Optional.ofNullable(orderItemEntity.getItem()).map(ItemDTO).orElse(null));
+        //orderItem.setItemEntity(Optional.ofNullable(orderItemEntity.getItemEntity()).map(Item).orElse(null));
         orderItem.setOrder(Optional.ofNullable(orderItemEntity.getOrderEntity())
                 .map(Order::toDto).orElse(null));
         orderItem.setCreatedTime(orderItemEntity.getCreatedTime());
@@ -45,7 +45,7 @@ public class OrderItem {
     public OrderItemEntity toEntity() {
         OrderItemEntity orderItemEntity = new OrderItemEntity();
 
-        //orderItemEntity.setItem();
+        //orderItemEntity.setItemEntity();
         orderItemEntity.setOrderEntity(this.order.toEntity());
         orderItemEntity.setCreatedTime(this.createdTime);
 

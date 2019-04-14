@@ -14,10 +14,10 @@ public class Exceptions {
     }
 
     public static RestAPIEntityNotFoundException getCategoryNotFoundException(int categoryId) {
-        return new RestAPIEntityNotFoundException("Category not found for id: " + categoryId);
+        return new RestAPIEntityNotFoundException("CategoryEntity not found for id: " + categoryId);
     }
 
     public static RestAPIEntityNotFoundException getItemNotFoundException(int itemId) {
-        return new RestAPIEntityNotFoundException("Item not found for id: " + itemId);
+        return new RestAPIEntityNotFoundException("ItemEntity not found for id: " + itemId);
     }
 }

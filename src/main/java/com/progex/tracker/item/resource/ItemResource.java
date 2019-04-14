@@ -1,9 +1,8 @@
 package com.progex.tracker.item.resource;
 
-import com.progex.tracker.category.entity.Category;
 import com.progex.tracker.exceptions.Exceptions;
-import com.progex.tracker.item.dto.ItemDTO;
-import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.item.dto.Item;
+import com.progex.tracker.item.entity.ItemEntity;
 import com.progex.tracker.item.service.ItemService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -14,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Optional;
 
 /**
  * @author indunil
@@ -33,29 +31,25 @@ public class ItemResource {
     private static final String BASE_URL_STR = "/api/items/";
 
     @PostMapping("/items")
-    public ResponseEntity<ItemDTO> createItem(@Validated @RequestBody ItemDTO itemDTO) {
-        Optional<Category> optionalCategory = itemService.getCategoryById(itemDTO.getCategory().getId());
-        if (optionalCategory.isPresent()) {
-            Item item = modelMapper.map(itemDTO, Item.class);
-            item.setCategory(optionalCategory.get());
-            Optional<Item> optionalItem = itemService.insert(item);
-            if (optionalItem.isPresent()) {
-                return ResponseEntity.created(URI.create(BASE_URL_STR +
-                        optionalItem.get().getId())).body(modelMapper.map(optionalItem.get(), ItemDTO.class));
-            }
-        } else {
-            LOGGER.warn("Given Category is not presented, categoryId = {} ", itemDTO.getCategory().getId());
-            throw Exceptions.getCategoryNotFoundException(itemDTO.getCategory().getId());
-        }
-        LOGGER.warn("Failed to create given item, name = {} ", itemDTO.getName());
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Item> createItem(@Validated @RequestBody Item item) {
+        return itemService.getCategoryById(item.getCategoryEntity()
+                .getId()).map(categoryEntity -> {
+            ItemEntity itemEntity = modelMapper.map(item, ItemEntity.class);
+            itemEntity.setCategoryEntity(categoryEntity);
+            ItemEntity savedItem = itemService.insert(itemEntity);
+            return ResponseEntity.created(URI.create(BASE_URL_STR +
+                    savedItem.getId())).body(modelMapper.map(savedItem, Item.class));
+        }).orElseThrow(() -> {
+            LOGGER.warn("Given Category is not presented, categoryId = {} ", item.getCategoryEntity().getId());
+            throw Exceptions.getCategoryNotFoundException(item.getCategoryEntity().getId());
+        });
     }
 
     @GetMapping("/items/{itemId}")
-    public ResponseEntity<ItemDTO> getItemById(@PathVariable int itemId) {
+    public ResponseEntity<Item> getItemById(@PathVariable int itemId) {
 
         return itemService.getItemById(itemId).map(
-                item -> ResponseEntity.ok().body(modelMapper.map(item, ItemDTO.class))
+                item -> ResponseEntity.ok().body(modelMapper.map(item, Item.class))
         ).orElseThrow(
                 () -> {
                     LOGGER.warn("No Item found for the given id = {}", itemId);
@@ -75,5 +69,16 @@ public class ItemResource {
                     throw Exceptions.getItemNotFoundException(itemId);
                 }
         );
+    }
+
+    @PutMapping("/items/{itemId}")
+    public ResponseEntity<Item> updateItem(@RequestBody Item item, @PathVariable int itemId) {
+        if (itemService.getItemById(itemId).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        item.setId(itemId);
+        ItemEntity itemEntity = modelMapper.map(item, ItemEntity.class);
+        itemEntity = itemService.update(itemEntity);
+        return ResponseEntity.ok(modelMapper.map(itemEntity, Item.class));
     }
 }

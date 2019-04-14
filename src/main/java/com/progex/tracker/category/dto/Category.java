@@ -1,7 +1,8 @@
 package com.progex.tracker.category.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.progex.tracker.item.dto.ItemDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.progex.tracker.item.dto.Item;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -14,13 +15,14 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class CategoryDTO {
+public class Category {
     @Id
     private int id;
 
     private @NonNull String name;
 
-    @JsonIgnoreProperties("category")
-    private List<ItemDTO> items;
+    @JsonProperty("items")
+    @JsonIgnoreProperties("categoryEntity")
+    private List<Item> itemEntities;
 
 }

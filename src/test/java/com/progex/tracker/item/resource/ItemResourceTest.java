@@ -1,8 +1,8 @@
 package com.progex.tracker.item.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.progex.tracker.item.dto.ItemDTO;
-import com.progex.tracker.item.entity.Item;
+import com.progex.tracker.item.dto.Item;
+import com.progex.tracker.item.entity.ItemEntity;
 import com.progex.tracker.item.service.ItemService;
 import com.progex.tracker.utility.TestUtils;
 import org.junit.Before;
@@ -51,53 +51,53 @@ public class ItemResourceTest {
 
     @Test
     public void shouldCreateItemWhenProvidingValidItem() throws Exception {
-        Item item = getMockItem();
-        when(itemService.insert(item)).thenReturn(Optional.of(item));
-        when(itemService.getCategoryById(item.getCategory().getId())).
-                thenReturn(Optional.of(item.getCategory()));
+        ItemEntity itemEntity = getMockItem();
+        when(itemService.insert(itemEntity)).thenReturn(itemEntity);
+        when(itemService.getCategoryById(itemEntity.getCategoryEntity().getId())).
+                thenReturn(Optional.of(itemEntity.getCategoryEntity()));
 
-        ItemDTO itemDTO = mapToDTO(item);
-        when(modelMapper.map(any(ItemDTO.class), eq(Item.class))).thenReturn(item);
-        when(modelMapper.map(any(Item.class), eq(ItemDTO.class))).thenReturn(itemDTO);
+        Item item = mapToDTO(itemEntity);
+        when(modelMapper.map(any(Item.class), eq(ItemEntity.class))).thenReturn(itemEntity);
+        when(modelMapper.map(any(ItemEntity.class), eq(Item.class))).thenReturn(item);
 
         mockMvc.perform(
                 post(BASE_URL_STR)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(itemDTO)))
+                        .content(asJsonString(item)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", is(itemDTO.getName())))
-                .andExpect(jsonPath("$.calorie", is(itemDTO.getCalorie())))
-                .andExpect(jsonPath("$.code", is(itemDTO.getCode())))
-                .andExpect(jsonPath("$.origin", is(itemDTO.getOrigin())))
-                .andExpect(jsonPath("$.description", is(itemDTO.getDescription())))
-                .andExpect(jsonPath("$.id", is(itemDTO.getId())))
+                .andExpect(jsonPath("$.name", is(item.getName())))
+                .andExpect(jsonPath("$.calorie", is(item.getCalorie())))
+                .andExpect(jsonPath("$.code", is(item.getCode())))
+                .andExpect(jsonPath("$.origin", is(item.getOrigin())))
+                .andExpect(jsonPath("$.description", is(item.getDescription())))
+                .andExpect(jsonPath("$.id", is(item.getId())))
                 .andExpect(header().string("location", containsString(BASE_URL_STR + "1")));
 
         verify(itemService, times(1)).getCategoryById(anyInt());
-        verify(itemService, times(1)).insert(any(Item.class));
+        verify(itemService, times(1)).insert(any(ItemEntity.class));
         verifyNoMoreInteractions(itemService);
     }
 
     @Test
     public void shouldReturnBadRequestWhenProvidingItemWithoutCategory() throws Exception {
-        Item item = getMockItem();
-        when(itemService.insert(item)).thenReturn(Optional.of(item));
-        when(itemService.getCategoryById(item.getCategory().getId())).
-                thenReturn(Optional.of(item.getCategory()));
+        ItemEntity itemEntity = getMockItem();
+        when(itemService.insert(itemEntity)).thenReturn(itemEntity);
+        when(itemService.getCategoryById(itemEntity.getCategoryEntity().getId())).
+                thenReturn(Optional.of(itemEntity.getCategoryEntity()));
 
-        ItemDTO itemDTO = mapToDTO(item);
-        itemDTO.setCategory(null);
-        when(modelMapper.map(any(ItemDTO.class), eq(Item.class))).thenReturn(item);
-        when(modelMapper.map(any(Item.class), eq(ItemDTO.class))).thenReturn(itemDTO);
+        Item item = mapToDTO(itemEntity);
+        item.setCategoryEntity(null);
+        when(modelMapper.map(any(Item.class), eq(ItemEntity.class))).thenReturn(itemEntity);
+        when(modelMapper.map(any(ItemEntity.class), eq(Item.class))).thenReturn(item);
 
         mockMvc.perform(
                 post(BASE_URL_STR)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(itemDTO)))
+                        .content(asJsonString(item)))
                 .andExpect(status().isBadRequest());
 
         verify(itemService, never()).getCategoryById(anyInt());
-        verify(itemService, never()).insert(any(Item.class));
+        verify(itemService, never()).insert(any(ItemEntity.class));
     }
 
     @Test
@@ -109,14 +109,14 @@ public class ItemResourceTest {
                 .andExpect(status().isBadRequest());
 
         verify(itemService, never()).getCategoryById(anyInt());
-        verify(itemService, never()).insert(any(Item.class));
+        verify(itemService, never()).insert(any(ItemEntity.class));
     }
 
     @Test
     public void shouldReturnNotFoundWhenProvidedItemIsNotSavedAndCategoryIdIsInvalid() throws Exception {
-        Item item = getMockItem();
-
-        when(itemService.getCategoryById(item.getCategory().getId())).
+        ItemEntity itemEntity = getMockItem();
+        Item item = mapToDTO(itemEntity);
+        when(itemService.getCategoryById(itemEntity.getCategoryEntity().getId())).
                 thenReturn(Optional.empty());
 
         mockMvc.perform(
@@ -131,19 +131,19 @@ public class ItemResourceTest {
 
     @Test
     public void shouldReturnItemWhenProvidingAValidItemId() throws Exception {
-        Item item = getMockItem();
-        when(modelMapper.map(any(Item.class), eq(ItemDTO.class))).thenReturn(mapToDTO(item));
+        ItemEntity itemEntity = getMockItem();
+        when(modelMapper.map(any(ItemEntity.class), eq(Item.class))).thenReturn(mapToDTO(itemEntity));
 
-        when(itemService.getItemById(item.getId())).thenReturn(Optional.of(item));
-        mockMvc.perform(get(BASE_URL_STR + item.getId())
+        when(itemService.getItemById(itemEntity.getId())).thenReturn(Optional.of(itemEntity));
+        mockMvc.perform(get(BASE_URL_STR + itemEntity.getId())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(item.getName())))
-                .andExpect(jsonPath("$.calorie", is(item.getCalorie())))
-                .andExpect(jsonPath("$.code", is(item.getCode())))
-                .andExpect(jsonPath("$.origin", is(item.getOrigin())))
-                .andExpect(jsonPath("$.description", is(item.getDescription())))
-                .andExpect(jsonPath("$.id", is(item.getId())));
+                .andExpect(jsonPath("$.name", is(itemEntity.getName())))
+                .andExpect(jsonPath("$.calorie", is(itemEntity.getCalorie())))
+                .andExpect(jsonPath("$.code", is(itemEntity.getCode())))
+                .andExpect(jsonPath("$.origin", is(itemEntity.getOrigin())))
+                .andExpect(jsonPath("$.description", is(itemEntity.getDescription())))
+                .andExpect(jsonPath("$.id", is(itemEntity.getId())));
     }
 
     @Test
@@ -157,8 +157,8 @@ public class ItemResourceTest {
 
     @Test
     public void shouldReturnOKWhenSuccessfullyDeleteGivenItem() throws Exception {
-        Item item = TestUtils.getMockItem();
-        when(itemService.getItemById(anyInt())).thenReturn(Optional.of(item));
+        ItemEntity itemEntity = TestUtils.getMockItem();
+        when(itemService.getItemById(anyInt())).thenReturn(Optional.of(itemEntity));
 
         mockMvc.perform(
                 delete(BASE_URL_STR+"1")
@@ -181,6 +181,29 @@ public class ItemResourceTest {
         verify(itemService, never()).deleteById(anyInt());
         verifyNoMoreInteractions(itemService);
     }
+
+    @Test
+    public void shouldUpdateItemWhenProvidingValidItem() throws Exception {
+        ItemEntity itemEntity = getMockItem();
+        when(itemService.getItemById(anyInt())).thenReturn(Optional.of(itemEntity));
+    /*    when(itemService.getCategoryById(itemEntity.getCategoryEntity().getId())).
+                thenReturn(Optional.of(itemEntity.getCategoryEntity()));*/
+
+        Item item = mapToDTO(itemEntity);
+        when(modelMapper.map(any(Item.class), eq(ItemEntity.class))).thenReturn(itemEntity);
+        when(modelMapper.map(any(ItemEntity.class), eq(Item.class))).thenReturn(item);
+
+        mockMvc.perform(
+                put(BASE_URL_STR+"1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(item)))
+                .andExpect(status().isOk());
+
+        verify(itemService, times(1)).getItemById(anyInt());
+        verify(itemService, times(1)).update(any(ItemEntity.class));
+        verifyNoMoreInteractions(itemService);
+    }
+
     public static String asJsonString(final Object obj) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
@@ -190,8 +213,8 @@ public class ItemResourceTest {
         }
     }
 
-    private ItemDTO mapToDTO(Item item) {
+    private Item mapToDTO(ItemEntity itemEntity) {
         ModelMapper mMapper = new ModelMapper();
-        return mMapper.map(item, ItemDTO.class);
+        return mMapper.map(itemEntity, Item.class);
     }
 }
