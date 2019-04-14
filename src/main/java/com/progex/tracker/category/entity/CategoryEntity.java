@@ -14,7 +14,6 @@ import java.util.List;
  * @author indunil
  */
 @Entity
-@Table(name = "categoryEntity")
 @Getter
 @Setter
 @NoArgsConstructor

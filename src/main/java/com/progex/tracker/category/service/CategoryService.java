@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface CategoryService {
 
 
-    CategoryEntity createCategory(CategoryEntity categoryEntity);
+    CategoryEntity insert(CategoryEntity categoryEntity);
 
     Optional<CategoryEntity> getCategoryById(int categoryId);
 

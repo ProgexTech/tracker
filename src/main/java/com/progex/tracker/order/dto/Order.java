@@ -1,15 +1,16 @@
 package com.progex.tracker.order.dto;
 
-import com.progex.tracker.diningTable.dto.DiningTable;
+import com.progex.tracker.dining.dto.DiningTable;
+import com.progex.tracker.item.dto.Item;
 import com.progex.tracker.order.entity.OrderEntity;
-import com.progex.tracker.orderItem.dto.OrderItem;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 public class Order {
 
     private long id;
-    private List<OrderItem> orderItems;
+    private List<Item> orderItems;
     @NotNull
     private DiningTable diningTable;
     private LocalDateTime createdTime;
@@ -27,11 +28,11 @@ public class Order {
     public static Order toDto(OrderEntity orderEntity) {
         Order order = new Order();
 
-        order.setId(orderEntity.getId());
+       /* order.setId(orderEntity.getId());
         order.setDiningTable(DiningTable.toDto(orderEntity.getDiningTable()));
         order.setOrderItems(Optional.ofNullable(orderEntity.getOrderItems())
                 .map(OrderItem::toDto).orElse(new ArrayList<>()));
-        order.setCreatedTime(orderEntity.getCreatedTime());
+        order.setCreatedTime(orderEntity.getCreatedTime());*/
 
         return order;
     }
@@ -46,10 +47,10 @@ public class Order {
         OrderEntity orderEntity = new OrderEntity();
 
         orderEntity.setId(this.id);
-        orderEntity.setOrderItems(this.orderItems.stream()
+       /* orderEntity.setOrderItems(this.orderItems.stream()
                 .map(OrderItem::toEntity).collect(Collectors.toList()));
-        orderEntity.setDiningTable(this.diningTable.toEntity());
-        orderEntity.setCreatedTime(this.createdTime);
+        orderEntity.setDiningTable(this.dining.toEntity());
+        orderEntity.setCreatedTime(this.createdTime);*/
 
         return orderEntity;
     }

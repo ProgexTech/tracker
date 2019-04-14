@@ -3,7 +3,6 @@ package com.progex.tracker.category.service.impl;
 import com.progex.tracker.category.entity.CategoryEntity;
 import com.progex.tracker.category.repo.CategoryRepository;
 import com.progex.tracker.category.service.CategoryService;
-import com.progex.tracker.exceptions.EntityNotFoundException;
 import com.progex.tracker.item.repo.ItemRepository;
 import com.progex.tracker.item.service.ItemService;
 import com.progex.tracker.item.service.impl.ItemServiceImpl;
@@ -63,7 +62,7 @@ public class CategoryEntityServiceImplTest {
         when(categoryRepository.save(categoryEntity)).
                 thenReturn(categoryEntity);
 
-        CategoryEntity returnedCategoryEntity = categoryService.createCategory(categoryEntity);
+        CategoryEntity returnedCategoryEntity = categoryService.insert(categoryEntity);
         assertNotNull(returnedCategoryEntity);
         assertEquals(categoryEntity, returnedCategoryEntity);
     }

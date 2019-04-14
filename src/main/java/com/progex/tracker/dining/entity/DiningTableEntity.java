@@ -1,28 +1,28 @@
-package com.progex.tracker.customer.entity;
+package com.progex.tracker.dining.entity;
 
 import com.progex.tracker.order.entity.OrderEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class CustomerEntity {
+public class DiningTableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private int id;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "customerEntity")
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "dining")
     private List<OrderEntity> orders;
 
-    private String name;
-    private String phone;
+    private int noOfSeats;
 
-    @OneToMany
-    private List<OrderEntity> orderList;
+    @NotNull
+    private String groupNo;
 
 }

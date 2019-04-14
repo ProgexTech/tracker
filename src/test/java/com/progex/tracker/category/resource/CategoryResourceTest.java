@@ -56,7 +56,7 @@ public class CategoryResourceTest {
     @Test
     public void shouldCreateCategoryWhenProvidingValidCategory() throws Exception {
         CategoryEntity categoryEntity = TestUtils.getMockCategory();
-        when(categoryService.createCategory(categoryEntity)).thenReturn(categoryEntity);
+        when(categoryService.insert(categoryEntity)).thenReturn(categoryEntity);
 
         Category category = mapToDTO(categoryEntity);
         when(modelMapper.map(any(Category.class), eq(CategoryEntity.class))).thenReturn(categoryEntity);
@@ -74,7 +74,7 @@ public class CategoryResourceTest {
                 .andExpect(jsonPath("$.items[0].calorie", is(category.getItemEntities().iterator().next().getCalorie())))
                 .andExpect(header().string("location", containsString(BASE_URL_STR + categoryEntity.getId())));
 
-        verify(categoryService, times(1)).createCategory(any());
+        verify(categoryService, times(1)).insert(any());
         verifyNoMoreInteractions(categoryService);
     }
 
@@ -123,14 +123,14 @@ public class CategoryResourceTest {
                         .content(""))
                 .andExpect(status().isBadRequest());
 
-        verify(categoryService, never()).createCategory(any(CategoryEntity.class));
+        verify(categoryService, never()).insert(any(CategoryEntity.class));
     }
 
 
     @Test
     public void shouldReturnNoContentWhenProvidedCategoryIsNotSaved() throws Exception {
         CategoryEntity categoryEntity = TestUtils.getMockCategory();
-        when(categoryService.createCategory(any(CategoryEntity.class))).
+        when(categoryService.insert(any(CategoryEntity.class))).
                 thenReturn(categoryEntity);
 
         mockMvc.perform(
@@ -139,7 +139,7 @@ public class CategoryResourceTest {
                         .content(asJsonString(categoryEntity)))
                 .andExpect(status().isNoContent());
 
-        verify(categoryService, never()).createCategory(any(CategoryEntity.class));
+        verify(categoryService, never()).insert(any(CategoryEntity.class));
     }
 
     @Test

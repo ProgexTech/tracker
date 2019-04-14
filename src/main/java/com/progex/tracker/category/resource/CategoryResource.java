@@ -37,7 +37,7 @@ public class CategoryResource {
     public ResponseEntity<Category> createCategory(@RequestBody Category category) {
         CategoryEntity categoryEntity = modelMapper.map(category, CategoryEntity.class);
         if (Objects.nonNull(categoryEntity)) {
-            CategoryEntity savedCategoryEntity = categoryService.createCategory(categoryEntity);
+            CategoryEntity savedCategoryEntity = categoryService.insert(categoryEntity);
             return ResponseEntity.created(URI.create(BASE_URL_STR +
                     savedCategoryEntity.getId())).body(modelMapper.
                     map(savedCategoryEntity, Category.class));

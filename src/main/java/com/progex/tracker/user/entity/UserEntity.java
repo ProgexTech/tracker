@@ -1,14 +1,15 @@
 package com.progex.tracker.user.entity;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
-@Table(name = "users")
-@Data
+@MappedSuperclass
+@Getter
+@Setter
 @NoArgsConstructor
 public class UserEntity {
 
