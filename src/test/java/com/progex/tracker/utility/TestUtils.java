@@ -1,6 +1,7 @@
 package com.progex.tracker.utility;
 
 import com.progex.tracker.category.entity.CategoryEntity;
+import com.progex.tracker.customer.entity.CustomerEntity;
 import com.progex.tracker.item.entity.ItemEntity;
 
 import java.util.Arrays;
@@ -30,5 +31,13 @@ public class TestUtils {
         categoryEntity.setName("categoryEntity");
         categoryEntity.setItemEntities(Arrays.asList(itemEntity));
         return categoryEntity;
+    }
+
+    public static CustomerEntity getMockCustomerEntity() {
+        CustomerEntity customerEntity = new CustomerEntity();
+        customerEntity.setId(1);
+        customerEntity.setName("customer name");
+        customerEntity.setPhone("0917878787");
+        return customerEntity;
     }
 }

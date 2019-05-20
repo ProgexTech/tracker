@@ -1,6 +1,5 @@
 package com.progex.tracker.customer.service.impl;
 
-import com.progex.tracker.customer.dto.Customer;
 import com.progex.tracker.customer.entity.CustomerEntity;
 import com.progex.tracker.customer.repo.CustomerRepository;
 import com.progex.tracker.customer.service.CustomerService;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -25,42 +25,21 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerEntity createNewCustomer(Customer customer) {
-
-        LOGGER.info("==> Creating a new customer. name: [{}].", customer.getName());
-
-        CustomerEntity customerEntity = customer.toEntity();
-        CustomerEntity savedCustomer = customerRepository.save(customerEntity);
-
-        LOGGER.info("<== New customer created. name: [{}], id: [{}].", savedCustomer.getName(), savedCustomer.getId());
-
-        return savedCustomer;
+    public CustomerEntity insert(CustomerEntity customer) {
+        return customerRepository.save(customer);
     }
 
     @Override
-    public CustomerEntity getCustomerById(long customerId) {
+    public Optional<CustomerEntity> getById(long customerId) {
 
-        LOGGER.info("==> Retrieving a customer for id: [{}].", customerId);
-
-        CustomerEntity customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> {
-                    LOGGER.warn("### Customer not found for id: [{}].", customerId);
-                    throw Exceptions.getCustomerNotFoundException(customerId);
-                });
-
-        LOGGER.info("<== Returning a customer for id: [{}].", customer.getId());
-
-        return customer;
+        return customerRepository.findById(customerId);
     }
 
     @Override
-    public CustomerEntity updateCustomer(long customerId, Customer customer) {
-
-        LOGGER.info("==> Updating a customer for id: [{}].", customerId);
-
+    public CustomerEntity update(long customerId, CustomerEntity customer) {
         CustomerEntity customerEntity = customerRepository.findById(customerId)
                 .orElseThrow(() -> {
-                    LOGGER.warn("### Customer not found for id: [{}].", customerId);
+                    LOGGER.warn("Customer not found for id: [{}].", customerId);
                     throw Exceptions.getCustomerNotFoundException(customerId);
                 });
 
@@ -77,14 +56,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<CustomerEntity> getAllCustomers(int offset, int limit) {
-
-        LOGGER.info("==> Retrieving all customers by offset=[{}] and limit=[{}].", offset, limit);
-
+    public List<CustomerEntity> getAll(int offset, int limit) {
         List<CustomerEntity> customerEntities = customerRepository.findAllCustomers(offset, limit);
-
-        LOGGER.info("<== Returning [{}] customers.", customerEntities.size());
-
         return customerEntities;
     }
 

@@ -22,7 +22,4 @@ public class CustomerEntity {
     private String name;
     private String phone;
 
-    @OneToMany
-    private List<OrderEntity> orderList;
-
 }

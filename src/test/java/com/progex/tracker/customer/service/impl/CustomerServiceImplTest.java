@@ -1,21 +1,22 @@
 package com.progex.tracker.customer.service.impl;
 
-import com.progex.tracker.customer.dto.Customer;
 import com.progex.tracker.customer.entity.CustomerEntity;
 import com.progex.tracker.customer.repo.CustomerRepository;
 import com.progex.tracker.exceptions.EntityNotFoundException;
+import com.progex.tracker.utility.TestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -29,101 +30,51 @@ public class CustomerServiceImplTest {
 
     @Test
     public void shouldReturnCustomerWhenSaving() {
-        Customer customer = new Customer() {{
-            this.setName("John");
-            this.setPhone("0778909854");
-            this.setOrderList(new ArrayList<>());
-        }};
+        CustomerEntity customer = TestUtils.getMockCustomerEntity();
 
-        when(customerRepository.save(customer.toEntity()))
-                .thenReturn(customer.toEntity());
+        when(customerRepository.save(customer))
+                .thenReturn(customer);
 
-        CustomerEntity customerEntity = customerService.createNewCustomer(customer);
+        CustomerEntity customerEntity = customerService.insert(customer);
         assertEquals(customer.getName(), customerEntity.getName());
         assertEquals(customer.getPhone(), customerEntity.getPhone());
-        assertEquals(0, customerEntity.getOrderList().size());
     }
 
     @Test
     public void shouldReturnValidCustomerWhenCallingGetByIdWithAValidId() {
-        CustomerEntity testEntity = new CustomerEntity() {{
-            this.setId(1L);
-            this.setName("John");
-            this.setPhone("0778909854");
-            this.setOrderList(new ArrayList<>());
-        }};
+        CustomerEntity testEntity = TestUtils.getMockCustomerEntity();
 
         when(customerRepository.findById(1L))
                 .thenReturn(Optional.of(testEntity));
 
-        CustomerEntity customerEntity = customerService.getCustomerById(1L);
-        assertEquals(testEntity.getId(), customerEntity.getId());
-        assertEquals(testEntity.getName(), customerEntity.getName());
-        assertEquals(testEntity.getPhone(), customerEntity.getPhone());
-        assertEquals(0, customerEntity.getOrderList().size());
+        Optional<CustomerEntity> customerEntity = customerService.getById(1L);
+        assertTrue(customerEntity.isPresent());
+        assertEquals(testEntity.getId(), customerEntity.get().getId());
+        assertEquals(testEntity.getName(), customerEntity.get().getName());
+        assertEquals(testEntity.getPhone(), customerEntity.get().getPhone());
+        assertNull(customerEntity.get().getOrders());
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void shouldThrowExceptionWhenCallingGetByIdWithAnInvalidId() {
-        CustomerEntity testEntity = new CustomerEntity() {{
-            this.setId(1L);
-            this.setName("John");
-            this.setPhone("0778909854");
-            this.setOrderList(new ArrayList<>());
-        }};
-
         when(customerRepository.findById(1L))
-                .thenReturn(Optional.of(testEntity));
-
-        customerService.getCustomerById(2L);
+                .thenReturn(Optional.empty());
+        assertTrue(customerService.getById(1L).isEmpty());
     }
 
     @Test
     public void shouldReturnUpdatedEntityWhenCallingUpdateWithAValidId() {
-        Customer customer = new Customer() {{
-            this.setName("John Doe");
-            this.setPhone("0112258796");
-            this.setOrderList(new ArrayList<>());
-        }};
-        CustomerEntity testEntity = new CustomerEntity() {{
-            this.setId(1L);
-            this.setName(customer.getName());
-            this.setPhone(customer.getPhone());
-            this.setOrderList(new ArrayList<>());
-        }};
+        CustomerEntity customerEntity = TestUtils.getMockCustomerEntity();
 
         when(customerRepository.findById(1L))
-                .thenReturn(Optional.of(testEntity));
-        when(customerRepository.save(testEntity))
-                .thenReturn(testEntity);
+                .thenReturn(Optional.of(customerEntity));
+        when(customerRepository.save(customerEntity))
+                .thenReturn(customerEntity);
 
-        CustomerEntity customerEntity = customerService.updateCustomer(1L, customer);
-        assertEquals(testEntity.getId(), customerEntity.getId());
-        assertEquals(testEntity.getName(), customerEntity.getName());
-        assertEquals(testEntity.getPhone(), customerEntity.getPhone());
-        assertEquals(0, customerEntity.getOrderList().size());
-    }
-
-    @Test(expected = EntityNotFoundException.class)
-    public void shouldThrowExceptionWhenCallingUpdateWithAnInvalidId() {
-        Customer customer = new Customer() {{
-            this.setName("John Doe");
-            this.setPhone("0112258796");
-            this.setOrderList(new ArrayList<>());
-        }};
-        CustomerEntity testEntity = new CustomerEntity() {{
-            this.setId(1L);
-            this.setName(customer.getName());
-            this.setPhone(customer.getPhone());
-            this.setOrderList(new ArrayList<>());
-        }};
-
-        when(customerRepository.findById(1L))
-                .thenReturn(Optional.of(testEntity));
-        when(customerRepository.save(testEntity))
-                .thenReturn(testEntity);
-
-        customerService.updateCustomer(2L, customer);
+        CustomerEntity updatedCustomerEntity = customerService.update(1L, customerEntity);
+        assertEquals(updatedCustomerEntity.getId(), updatedCustomerEntity.getId());
+        assertEquals(updatedCustomerEntity.getName(), updatedCustomerEntity.getName());
+        assertEquals(updatedCustomerEntity.getPhone(), updatedCustomerEntity.getPhone());
     }
 
     @Test
@@ -135,7 +86,7 @@ public class CustomerServiceImplTest {
                         new CustomerEntity()
                 ));
 
-        List<CustomerEntity> customerEntities = customerService.getAllCustomers(0, 10);
+        List<CustomerEntity> customerEntities = customerService.getAll(0, 10);
         assertEquals(3, customerEntities.size());
     }
 
