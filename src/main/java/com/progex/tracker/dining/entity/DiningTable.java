@@ -1,6 +1,6 @@
 package com.progex.tracker.dining.entity;
 
-import com.progex.tracker.order.entity.OrderEntity;
+import com.progex.tracker.order.entity.Order;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,14 +11,14 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class DiningTableEntity {
+public class DiningTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "dining")
-    private List<OrderEntity> orders;
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "diningTable")
+    private List<Order> orders;
 
     private int noOfSeats;
 

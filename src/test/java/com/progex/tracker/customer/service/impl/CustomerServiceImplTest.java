@@ -1,8 +1,7 @@
 package com.progex.tracker.customer.service.impl;
 
-import com.progex.tracker.customer.entity.CustomerEntity;
+import com.progex.tracker.customer.entity.Customer;
 import com.progex.tracker.customer.repo.CustomerRepository;
-import com.progex.tracker.exceptions.EntityNotFoundException;
 import com.progex.tracker.utility.TestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,24 +29,24 @@ public class CustomerServiceImplTest {
 
     @Test
     public void shouldReturnCustomerWhenSaving() {
-        CustomerEntity customer = TestUtils.getMockCustomerEntity();
+        Customer customer = TestUtils.getMockCustomerEntity();
 
         when(customerRepository.save(customer))
                 .thenReturn(customer);
 
-        CustomerEntity customerEntity = customerService.insert(customer);
+        Customer customerEntity = customerService.insert(customer);
         assertEquals(customer.getName(), customerEntity.getName());
         assertEquals(customer.getPhone(), customerEntity.getPhone());
     }
 
     @Test
     public void shouldReturnValidCustomerWhenCallingGetByIdWithAValidId() {
-        CustomerEntity testEntity = TestUtils.getMockCustomerEntity();
+        Customer testEntity = TestUtils.getMockCustomerEntity();
 
         when(customerRepository.findById(1L))
                 .thenReturn(Optional.of(testEntity));
 
-        Optional<CustomerEntity> customerEntity = customerService.getById(1L);
+        Optional<Customer> customerEntity = customerService.getById(1L);
         assertTrue(customerEntity.isPresent());
         assertEquals(testEntity.getId(), customerEntity.get().getId());
         assertEquals(testEntity.getName(), customerEntity.get().getName());
@@ -64,29 +63,29 @@ public class CustomerServiceImplTest {
 
     @Test
     public void shouldReturnUpdatedEntityWhenCallingUpdateWithAValidId() {
-        CustomerEntity customerEntity = TestUtils.getMockCustomerEntity();
+        Customer customer = TestUtils.getMockCustomerEntity();
 
         when(customerRepository.findById(1L))
-                .thenReturn(Optional.of(customerEntity));
-        when(customerRepository.save(customerEntity))
-                .thenReturn(customerEntity);
+                .thenReturn(Optional.of(customer));
+        when(customerRepository.save(customer))
+                .thenReturn(customer);
 
-        CustomerEntity updatedCustomerEntity = customerService.update(1L, customerEntity);
-        assertEquals(updatedCustomerEntity.getId(), updatedCustomerEntity.getId());
-        assertEquals(updatedCustomerEntity.getName(), updatedCustomerEntity.getName());
-        assertEquals(updatedCustomerEntity.getPhone(), updatedCustomerEntity.getPhone());
+        Customer updatedCustomer = customerService.update(1L, customer);
+        assertEquals(updatedCustomer.getId(), updatedCustomer.getId());
+        assertEquals(updatedCustomer.getName(), updatedCustomer.getName());
+        assertEquals(updatedCustomer.getPhone(), updatedCustomer.getPhone());
     }
 
     @Test
     public void shouldReturnCustomerListWhenCallingGetAllCustomers() {
         when(customerRepository.findAllCustomers(0, 10))
                 .thenReturn(Arrays.asList(
-                        new CustomerEntity(),
-                        new CustomerEntity(),
-                        new CustomerEntity()
+                        new Customer(),
+                        new Customer(),
+                        new Customer()
                 ));
 
-        List<CustomerEntity> customerEntities = customerService.getAll(0, 10);
+        List<Customer> customerEntities = customerService.getAll(0, 10);
         assertEquals(3, customerEntities.size());
     }
 

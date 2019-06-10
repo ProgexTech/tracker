@@ -1,8 +1,8 @@
 package com.progex.tracker.item.service.impl;
 
-import com.progex.tracker.category.entity.CategoryEntity;
+import com.progex.tracker.category.entity.Category;
 import com.progex.tracker.category.service.CategoryService;
-import com.progex.tracker.item.entity.ItemEntity;
+import com.progex.tracker.item.entity.Item;
 import com.progex.tracker.item.repo.ItemRepository;
 import com.progex.tracker.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,22 +23,22 @@ public class ItemServiceImpl implements ItemService {
     CategoryService categoryService;
 
     @Override
-    public ItemEntity insert(ItemEntity itemEntity) {
-        return itemRepository.save(itemEntity);
+    public Item insert(Item item) {
+        return itemRepository.save(item);
     }
 
     @Override
-    public Optional<ItemEntity> getItemById(int id) {
+    public Optional<Item> getItemById(int id) {
         return itemRepository.findById(id);
     }
 
     @Override
-    public ItemEntity update(ItemEntity itemEntity) {
-        return itemRepository.save(itemEntity);
+    public Item update(Item item) {
+        return itemRepository.save(item);
     }
 
     @Override
-    public Optional<CategoryEntity> getCategoryById(int categoryId) {
+    public Optional<Category> getCategoryById(int categoryId) {
         return categoryService.getCategoryById(categoryId);
     }
 

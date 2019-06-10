@@ -1,7 +1,7 @@
 package com.progex.tracker.category.resource;
 
-import com.progex.tracker.category.dto.Category;
-import com.progex.tracker.category.entity.CategoryEntity;
+import com.progex.tracker.category.dto.CategoryDto;
+import com.progex.tracker.category.entity.Category;
 import com.progex.tracker.category.service.CategoryService;
 import com.progex.tracker.exceptions.EntityNotFoundException;
 import com.progex.tracker.utility.TestUtils;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.progex.tracker.item.resource.ItemResourceTest.asJsonString;
+import static com.progex.tracker.utility.TestUtils.asJsonString;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -55,24 +55,24 @@ public class CategoryResourceTest {
 
     @Test
     public void shouldCreateCategoryWhenProvidingValidCategory() throws Exception {
-        CategoryEntity categoryEntity = TestUtils.getMockCategory();
-        when(categoryService.insert(categoryEntity)).thenReturn(categoryEntity);
+        Category category = TestUtils.getMockCategory();
+        when(categoryService.insert(category)).thenReturn(category);
 
-        Category category = mapToDTO(categoryEntity);
-        when(modelMapper.map(any(Category.class), eq(CategoryEntity.class))).thenReturn(categoryEntity);
-        when(modelMapper.map(any(CategoryEntity.class), eq(Category.class))).thenReturn(category);
+        CategoryDto categoryDto = mapToDTO(category);
+        when(modelMapper.map(any(CategoryDto.class), eq(Category.class))).thenReturn(category);
+        when(modelMapper.map(any(Category.class), eq(CategoryDto.class))).thenReturn(categoryDto);
 
         mockMvc.perform(
                 post(BASE_URL_STR)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(category)))
+                        .content(asJsonString(categoryDto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", is(category.getName())))
-                .andExpect(jsonPath("$.id", is(category.getId())))
-                .andExpect(jsonPath("$.items", hasSize(category.getItemEntities().size())))
-                .andExpect(jsonPath("$.items[0].name", is(category.getItemEntities().iterator().next().getName())))
-                .andExpect(jsonPath("$.items[0].calorie", is(category.getItemEntities().iterator().next().getCalorie())))
-                .andExpect(header().string("location", containsString(BASE_URL_STR + categoryEntity.getId())));
+                .andExpect(jsonPath("$.name", is(categoryDto.getName())))
+                .andExpect(jsonPath("$.id", is(categoryDto.getId())))
+                .andExpect(jsonPath("$.items", hasSize(categoryDto.getItemEntities().size())))
+                .andExpect(jsonPath("$.items[0].name", is(categoryDto.getItemEntities().iterator().next().getName())))
+                .andExpect(jsonPath("$.items[0].calorie", is(categoryDto.getItemEntities().iterator().next().getCalorie())))
+                .andExpect(header().string("location", containsString(BASE_URL_STR + category.getId())));
 
         verify(categoryService, times(1)).insert(any());
         verifyNoMoreInteractions(categoryService);
@@ -80,12 +80,12 @@ public class CategoryResourceTest {
 
     @Test
     public void shouldReturnListOfCategoriesWhenInvokingWithOffsetAndLimit() throws Exception {
-        CategoryEntity categoryEntity = TestUtils.getMockCategory();
-        when(categoryService.getAllCategories(anyInt(), anyInt())).thenReturn(Arrays.asList(categoryEntity));
+        Category category = TestUtils.getMockCategory();
+        when(categoryService.getAllCategories(anyInt(), anyInt())).thenReturn(Arrays.asList(category));
 
-        Category category = mapToDTO(categoryEntity);
-        when(modelMapper.map(any(Category.class), eq(CategoryEntity.class))).thenReturn(categoryEntity);
-        when(modelMapper.map(any(CategoryEntity.class), eq(Category.class))).thenReturn(category);
+        CategoryDto categoryDto = mapToDTO(category);
+        when(modelMapper.map(any(CategoryDto.class), eq(Category.class))).thenReturn(category);
+        when(modelMapper.map(any(Category.class), eq(CategoryDto.class))).thenReturn(categoryDto);
 
         mockMvc.perform(
                 get("/api/categories?offset=0&limit=10")
@@ -99,12 +99,12 @@ public class CategoryResourceTest {
 
     @Test
     public void shouldNoContentWhenNoEntriesAvailableForTheGivenOffsetAndLimit() throws Exception {
-        CategoryEntity categoryEntity = TestUtils.getMockCategory();
+        Category category = TestUtils.getMockCategory();
         when(categoryService.getAllCategories(anyInt(), anyInt())).thenReturn(new ArrayList<>());
 
-        Category category = mapToDTO(categoryEntity);
-        when(modelMapper.map(any(Category.class), eq(CategoryEntity.class))).thenReturn(categoryEntity);
-        when(modelMapper.map(any(CategoryEntity.class), eq(Category.class))).thenReturn(category);
+        CategoryDto categoryDto = mapToDTO(category);
+        when(modelMapper.map(any(CategoryDto.class), eq(Category.class))).thenReturn(category);
+        when(modelMapper.map(any(Category.class), eq(CategoryDto.class))).thenReturn(categoryDto);
 
         mockMvc.perform(
                 get("/api/categories?offset=0&limit=10")
@@ -123,36 +123,36 @@ public class CategoryResourceTest {
                         .content(""))
                 .andExpect(status().isBadRequest());
 
-        verify(categoryService, never()).insert(any(CategoryEntity.class));
+        verify(categoryService, never()).insert(any(Category.class));
     }
 
 
     @Test
     public void shouldReturnNoContentWhenProvidedCategoryIsNotSaved() throws Exception {
-        CategoryEntity categoryEntity = TestUtils.getMockCategory();
-        when(categoryService.insert(any(CategoryEntity.class))).
-                thenReturn(categoryEntity);
+        Category category = TestUtils.getMockCategory();
+        when(categoryService.insert(any(Category.class))).
+                thenReturn(category);
 
         mockMvc.perform(
                 post(BASE_URL_STR)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(categoryEntity)))
+                        .content(asJsonString(category)))
                 .andExpect(status().isNoContent());
 
-        verify(categoryService, never()).insert(any(CategoryEntity.class));
+        verify(categoryService, never()).insert(any(Category.class));
     }
 
     @Test
     public void shouldReturnCategoryWhenProvidingAValidCategoryId() throws Exception {
-        CategoryEntity categoryEntity = TestUtils.getMockCategory();
-        when(modelMapper.map(any(CategoryEntity.class), eq(Category.class))).thenReturn(mapToDTO(categoryEntity));
+        Category category = TestUtils.getMockCategory();
+        when(modelMapper.map(any(Category.class), eq(CategoryDto.class))).thenReturn(mapToDTO(category));
 
-        when(categoryService.getCategoryById(categoryEntity.getId())).thenReturn(Optional.of(categoryEntity));
-        mockMvc.perform(get(BASE_URL_STR + categoryEntity.getId())
+        when(categoryService.getCategoryById(category.getId())).thenReturn(Optional.of(category));
+        mockMvc.perform(get(BASE_URL_STR + category.getId())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(categoryEntity.getName())))
-                .andExpect(jsonPath("$.id", is(categoryEntity.getId())));
+                .andExpect(jsonPath("$.name", is(category.getName())))
+                .andExpect(jsonPath("$.id", is(category.getId())));
     }
 
     @Test
@@ -165,8 +165,8 @@ public class CategoryResourceTest {
 
     @Test
     public void shouldReturnOKWhenSuccessfullyDeleteGivenCategory() throws Exception {
-        CategoryEntity categoryEntity = TestUtils.getMockCategory();
-        when(categoryService.getCategoryById(anyInt())).thenReturn(Optional.of(categoryEntity));
+        Category category = TestUtils.getMockCategory();
+        when(categoryService.getCategoryById(anyInt())).thenReturn(Optional.of(category));
 
         mockMvc.perform(
                 delete(BASE_URL_STR+"1")
@@ -190,31 +190,31 @@ public class CategoryResourceTest {
         verifyNoMoreInteractions(categoryService);
     }
 
-    private Category mapToDTO(CategoryEntity categoryEntity) {
+    private CategoryDto mapToDTO(Category category) {
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(categoryEntity, Category.class);
+        return modelMapper.map(category, CategoryDto.class);
     }
 
     @Test
     public void shouldUpdateCategoryWhenProvidingValidCategoryIdAndContent() throws Exception {
-        CategoryEntity categoryEntity = TestUtils.getMockCategory();
+        Category category = TestUtils.getMockCategory();
 
-        CategoryEntity toBeUpdated = TestUtils.getMockCategory();
+        Category toBeUpdated = TestUtils.getMockCategory();
         toBeUpdated.setName("updated");
-        Category toBeUpdatedDto = mapToDTO(toBeUpdated);
-        Category category = mapToDTO(categoryEntity);
+        CategoryDto toBeUpdatedDto = mapToDTO(toBeUpdated);
+        CategoryDto categoryDto = mapToDTO(category);
 
-        when(modelMapper.map(any(Category.class), eq(CategoryEntity.class))).thenReturn(categoryEntity);
-        when(modelMapper.map(any(CategoryEntity.class), eq(Category.class))).thenReturn(toBeUpdatedDto);
+        when(modelMapper.map(any(CategoryDto.class), eq(Category.class))).thenReturn(category);
+        when(modelMapper.map(any(Category.class), eq(CategoryDto.class))).thenReturn(toBeUpdatedDto);
 
 
-        when(categoryService.getCategoryById(anyInt())).thenReturn(Optional.of(categoryEntity));
-        when(categoryService.update(anyInt(), any(CategoryEntity.class))).thenReturn(toBeUpdated);
+        when(categoryService.getCategoryById(anyInt())).thenReturn(Optional.of(category));
+        when(categoryService.update(anyInt(), any(Category.class))).thenReturn(toBeUpdated);
 
         mockMvc.perform(
-                put(BASE_URL_STR+ categoryEntity.getId())
+                put(BASE_URL_STR+ category.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(category)))
+                        .content(asJsonString(categoryDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(toBeUpdatedDto.getName())))
                 .andExpect(jsonPath("$.id", is(toBeUpdatedDto.getId())))
@@ -223,57 +223,57 @@ public class CategoryResourceTest {
                 .andExpect(jsonPath("$.items[0].calorie", is(toBeUpdatedDto.getItemEntities().iterator().next().getCalorie())));
 
         /*verify(categoryService, times(1)).getCategoryById(anyInt());
-        verify(categoryService, times(1)).update(toBeUpdated.getId(), any(CategoryEntity.class));
+        verify(categoryService, times(1)).update(toBeUpdated.getId(), any(Category.class));
         verifyNoMoreInteractions(categoryService);*/
     }
 
     @Test
     public void shouldReturnNoContentWhenFailedToSaveTheGivenEntity() throws Exception {
-        CategoryEntity categoryEntity = TestUtils.getMockCategory();
+        Category category = TestUtils.getMockCategory();
 
-        CategoryEntity toBeUpdated = TestUtils.getMockCategory();
+        Category toBeUpdated = TestUtils.getMockCategory();
         toBeUpdated.setName("updated name");
 
-        Category toBeUpdatedDto = mapToDTO(toBeUpdated);
-        Category category = mapToDTO(categoryEntity);
+        CategoryDto toBeUpdatedDto = mapToDTO(toBeUpdated);
+        CategoryDto categoryDto = mapToDTO(category);
 
-        when(modelMapper.map(any(Category.class), eq(CategoryEntity.class))).thenReturn(categoryEntity);
-        when(modelMapper.map(any(CategoryEntity.class), eq(Category.class))).thenReturn(toBeUpdatedDto);
+        when(modelMapper.map(any(CategoryDto.class), eq(Category.class))).thenReturn(category);
+        when(modelMapper.map(any(Category.class), eq(CategoryDto.class))).thenReturn(toBeUpdatedDto);
 
 
         when(categoryService.isExists(anyInt())).thenReturn(false);
-        when(categoryService.update(anyInt(), any(CategoryEntity.class))).thenThrow(EntityNotFoundException.class);
+        when(categoryService.update(anyInt(), any(Category.class))).thenThrow(EntityNotFoundException.class);
 
         mockMvc.perform(
-                put(BASE_URL_STR+ categoryEntity.getId())
+                put(BASE_URL_STR+ category.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(category)))
+                        .content(asJsonString(categoryDto)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void shouldReturnNotFoundWhenFailedToFindTheGivenCategory() throws Exception {
-        CategoryEntity categoryEntity = TestUtils.getMockCategory();
+        Category category = TestUtils.getMockCategory();
 
-        CategoryEntity toBeUpdated = TestUtils.getMockCategory();
+        Category toBeUpdated = TestUtils.getMockCategory();
         toBeUpdated.setName("updated");
-        Category toBeUpdatedDto = mapToDTO(toBeUpdated);
-        Category category = mapToDTO(categoryEntity);
+        CategoryDto toBeUpdatedDto = mapToDTO(toBeUpdated);
+        CategoryDto categoryDto = mapToDTO(category);
 
-        when(modelMapper.map(any(Category.class), eq(CategoryEntity.class))).thenReturn(categoryEntity);
-        when(modelMapper.map(any(CategoryEntity.class), eq(Category.class))).thenReturn(toBeUpdatedDto);
+        when(modelMapper.map(any(CategoryDto.class), eq(Category.class))).thenReturn(category);
+        when(modelMapper.map(any(Category.class), eq(CategoryDto.class))).thenReturn(toBeUpdatedDto);
 
 
         when(categoryService.getCategoryById(anyInt())).thenReturn(Optional.empty());
-        when(categoryService.update(anyInt(), any(CategoryEntity.class))).thenThrow(EntityNotFoundException.class);
+        when(categoryService.update(anyInt(), any(Category.class))).thenThrow(EntityNotFoundException.class);
 
         mockMvc.perform(
-                put(BASE_URL_STR+ categoryEntity.getId())
+                put(BASE_URL_STR+ category.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(category)))
+                        .content(asJsonString(categoryDto)))
                 .andExpect(status().isNotFound());
 
         verify(categoryService, times(1)).getCategoryById(anyInt());
-        verify(categoryService, never()).update(anyInt(), any(CategoryEntity.class));
+        verify(categoryService, never()).update(anyInt(), any(Category.class));
     }
 }

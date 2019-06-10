@@ -1,6 +1,6 @@
 package com.progex.tracker.customer.service.impl;
 
-import com.progex.tracker.customer.entity.CustomerEntity;
+import com.progex.tracker.customer.entity.Customer;
 import com.progex.tracker.customer.repo.CustomerRepository;
 import com.progex.tracker.customer.service.CustomerService;
 import com.progex.tracker.exceptions.Exceptions;
@@ -25,21 +25,21 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerEntity insert(CustomerEntity customer) {
+    public Customer insert(Customer customer) {
         return customerRepository.save(customer);
     }
 
     @Override
-    public Optional<CustomerEntity> getById(long customerId) {
+    public Optional<Customer> getById(long customerId) {
 
         return customerRepository.findById(customerId);
     }
 
     @Override
-    public CustomerEntity update(long customerId, CustomerEntity customer) {
-        CustomerEntity customerEntity = customerRepository.findById(customerId)
+    public Customer update(long customerId, Customer customer) {
+        Customer customerEntity = customerRepository.findById(customerId)
                 .orElseThrow(() -> {
-                    LOGGER.warn("Customer not found for id: [{}].", customerId);
+                    LOGGER.warn("CustomerDto not found for id: [{}].", customerId);
                     throw Exceptions.getCustomerNotFoundException(customerId);
                 });
 
@@ -48,16 +48,16 @@ public class CustomerServiceImpl implements CustomerService {
 
         /* We do not update order list here */
 
-        CustomerEntity savedCustomer = customerRepository.save(customerEntity);
+        Customer savedCustomer = customerRepository.save(customerEntity);
 
-        LOGGER.info("<== Customer updated for id: [{}], name: [{}].", savedCustomer.getId(), savedCustomer.getName());
+        LOGGER.info("<== CustomerDto updated for id: [{}], name: [{}].", savedCustomer.getId(), savedCustomer.getName());
 
         return savedCustomer;
     }
 
     @Override
-    public List<CustomerEntity> getAll(int offset, int limit) {
-        List<CustomerEntity> customerEntities = customerRepository.findAllCustomers(offset, limit);
+    public List<Customer> getAll(int offset, int limit) {
+        List<Customer> customerEntities = customerRepository.findAllCustomers(offset, limit);
         return customerEntities;
     }
 

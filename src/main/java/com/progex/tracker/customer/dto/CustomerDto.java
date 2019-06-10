@@ -1,6 +1,6 @@
 package com.progex.tracker.customer.dto;
 
-import com.progex.tracker.order.dto.Order;
+import com.progex.tracker.order.dto.OrderDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +12,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer {
+public class CustomerDto {
 
     private long id;
     private String name;
     private String phone;
-    private List<Order> orderList;
+    private List<OrderDto> orderDtoList;
 }

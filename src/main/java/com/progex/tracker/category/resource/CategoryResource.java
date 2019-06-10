@@ -1,7 +1,7 @@
 package com.progex.tracker.category.resource;
 
-import com.progex.tracker.category.dto.Category;
-import com.progex.tracker.category.entity.CategoryEntity;
+import com.progex.tracker.category.dto.CategoryDto;
+import com.progex.tracker.category.entity.Category;
 import com.progex.tracker.category.service.CategoryService;
 import com.progex.tracker.exceptions.Exceptions;
 import com.progex.tracker.item.resource.ItemResource;
@@ -34,38 +34,38 @@ public class CategoryResource {
     private static final String BASE_URL_STR = "/api/categories/";
 
     @PostMapping("/categories")
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-        CategoryEntity categoryEntity = modelMapper.map(category, CategoryEntity.class);
-        if (Objects.nonNull(categoryEntity)) {
-            CategoryEntity savedCategoryEntity = categoryService.insert(categoryEntity);
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
+        Category category = modelMapper.map(categoryDto, Category.class);
+        if (Objects.nonNull(category)) {
+            Category savedCategory = categoryService.insert(category);
             return ResponseEntity.created(URI.create(BASE_URL_STR +
-                    savedCategoryEntity.getId())).body(modelMapper.
-                    map(savedCategoryEntity, Category.class));
+                    savedCategory.getId())).body(modelMapper.
+                    map(savedCategory, CategoryDto.class));
         }
-        LOGGER.warn("Failed to insert given categoryEntity, name = {} ", category.getName());
+        LOGGER.warn("Failed to insert given category, name = {} ", categoryDto.getName());
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable int categoryId) {
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable int categoryId) {
         return categoryService.getCategoryById(categoryId).map(savedCategory -> {
-                    Category category = modelMapper.map(savedCategory, Category.class);
-                    return ResponseEntity.ok().body(category);
+                    CategoryDto categoryDto = modelMapper.map(savedCategory, CategoryDto.class);
+                    return ResponseEntity.ok().body(categoryDto);
                 }
         ).orElseThrow(() -> {
-            LOGGER.warn("No CategoryEntity found for the given id = {}", categoryId);
+            LOGGER.warn("No Category found for the given id = {}", categoryId);
             return Exceptions.getCategoryNotFoundException(categoryId);
         });
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<List<Category>> getAllCategories(@RequestParam(value = "offset", required = true) int offset,
-                                                           @RequestParam(value = "limit", required = true) int limit) {
-        List<CategoryEntity> allCategories = categoryService.getAllCategories(offset, limit);
+    public ResponseEntity<List<CategoryDto>> getAllCategories(@RequestParam(value = "offset", required = true) int offset,
+                                                              @RequestParam(value = "limit", required = true) int limit) {
+        List<Category> allCategories = categoryService.getAllCategories(offset, limit);
         if (!allCategories.isEmpty()) {
-            List<Category> categories = allCategories.stream().filter(Objects::nonNull)
+            List<CategoryDto> categories = allCategories.stream().filter(Objects::nonNull)
                     .map(category ->
-                            modelMapper.map(category, Category.class)
+                            modelMapper.map(category, CategoryDto.class)
                     ).collect(Collectors.toList());
 
             return ResponseEntity.ok(categories);
@@ -81,21 +81,21 @@ public class CategoryResource {
                     categoryService.deleteById(categoryId);
                     return ResponseEntity.ok().build();
                 }).orElseThrow(() -> {
-                            LOGGER.warn("No CategoryEntity found for the given id={}", categoryId);
+                            LOGGER.warn("No Category found for the given id={}", categoryId);
                             throw Exceptions.getCategoryNotFoundException(categoryId);
                         }
                 );
     }
 
     @PutMapping("/categories/{categoryId}")
-    ResponseEntity<Category> updateCategory(@RequestBody Category categoryDTO,
-                                            @PathVariable int categoryId) {
+    ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDTO,
+                                               @PathVariable int categoryId) {
         if(categoryService.getCategoryById(categoryId).isEmpty()) {
-            LOGGER.warn("No Category found for the given id={}", categoryId);
+            LOGGER.warn("No CategoryDto found for the given id={}", categoryId);
             return ResponseEntity.notFound().build();
         }
-        CategoryEntity newCategoryEntity = modelMapper.map(categoryDTO, CategoryEntity.class);
-        Category category = modelMapper.map(categoryService.update(categoryId, newCategoryEntity), Category.class);
+        Category newCategory = modelMapper.map(categoryDTO, Category.class);
+        CategoryDto category = modelMapper.map(categoryService.update(categoryId, newCategory), CategoryDto.class);
         return ResponseEntity.ok(category);
     }
 }

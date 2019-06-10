@@ -1,7 +1,7 @@
 package com.progex.tracker.item.service.impl;
 
 import com.progex.tracker.category.service.CategoryService;
-import com.progex.tracker.item.entity.ItemEntity;
+import com.progex.tracker.item.entity.Item;
 import com.progex.tracker.item.repo.ItemRepository;
 import com.progex.tracker.item.service.ItemService;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-public class ItemEntityServiceImplTest {
+public class ItemServiceImplTest {
     @MockBean
     private ItemRepository repository;
 
@@ -41,24 +41,24 @@ public class ItemEntityServiceImplTest {
 
     @Test
     public void shouldCreateItemWhenInvokingCreate() {
-        ItemEntity itemEntity = getMockItem();
+        Item item = getMockItem();
 
-        when(repository.save(itemEntity)).thenReturn(itemEntity);
+        when(repository.save(item)).thenReturn(item);
 
-        ItemEntity savedItem = itemService.insert(itemEntity);
+        Item savedItem = itemService.insert(item);
         assertNotNull(savedItem);
-        assertEquals(itemEntity, savedItem);
+        assertEquals(item, savedItem);
     }
 
     @Test
     public void shouldReturnItemWhenInvokingGetByIdWithValidId() {
-        ItemEntity itemEntity = getMockItem();
+        Item item = getMockItem();
 
-        when(repository.findById(itemEntity.getId())).thenReturn(Optional.of(itemEntity));
+        when(repository.findById(item.getId())).thenReturn(Optional.of(item));
 
-        Optional<ItemEntity> returnedItem = itemService.getItemById(itemEntity.getId());
+        Optional<Item> returnedItem = itemService.getItemById(item.getId());
         assertTrue(returnedItem.isPresent());
-        assertEquals(itemEntity, returnedItem.get());
+        assertEquals(item, returnedItem.get());
     }
 
     @Test

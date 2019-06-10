@@ -1,8 +1,8 @@
 package com.progex.tracker.order.entity;
 
-import com.progex.tracker.customer.entity.CustomerEntity;
-import com.progex.tracker.dining.entity.DiningTableEntity;
-import com.progex.tracker.item.entity.ItemEntity;
+import com.progex.tracker.customer.entity.Customer;
+import com.progex.tracker.dining.entity.DiningTable;
+import com.progex.tracker.item.entity.Item;
 import com.progex.tracker.user.entity.Cook;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +12,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Table(name = "Order_Detail")
 @Data
 @NoArgsConstructor
-public class OrderEntity {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
@@ -24,13 +25,13 @@ public class OrderEntity {
             name = "order_item",
             joinColumns = @JoinColumn(name = "item_id"),
             inverseJoinColumns = @JoinColumn(name = "order_id"))
-    private List<ItemEntity> orderedItems;
+    private List<Item> orderedItems;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private DiningTableEntity diningTable;
+    private DiningTable diningTable;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private CustomerEntity customerEntity;
+    private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Cook cook;

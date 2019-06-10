@@ -1,6 +1,6 @@
 package com.progex.tracker.category.entity;
 
-import com.progex.tracker.item.entity.ItemEntity;
+import com.progex.tracker.item.entity.Item;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CategoryEntity {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,13 +25,13 @@ public class CategoryEntity {
 
     private @NonNull String name;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "categoryEntity")
-    private List<ItemEntity> itemEntities = new ArrayList<>();
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "category")
+    private List<Item> itemEntities = new ArrayList<>();
 
-    public void addItem(ItemEntity itemEntity) {
-        itemEntities.add(itemEntity);
-        if (itemEntity.getCategoryEntity() != this){
-            itemEntity.setCategoryEntity(this);
+    public void addItem(Item item) {
+        itemEntities.add(item);
+        if (item.getCategory() != this){
+            item.setCategory(this);
         }
     }
 }

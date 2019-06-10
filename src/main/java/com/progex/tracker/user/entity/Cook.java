@@ -1,6 +1,6 @@
 package com.progex.tracker.user.entity;
 
-import com.progex.tracker.order.entity.OrderEntity;
+import com.progex.tracker.order.entity.Order;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,10 +10,10 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Cook extends UserEntity{
+public class Cook extends User {
 
     @OneToMany(fetch= FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cook")
-    private List<OrderEntity> orders;
+    private List<Order> orders;
 
     private String expertise;
 }

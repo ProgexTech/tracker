@@ -1,16 +1,11 @@
 package com.progex.tracker.user.service.impl;
 
-import com.progex.tracker.exceptions.Exceptions;
-import com.progex.tracker.user.dto.User;
-import com.progex.tracker.user.entity.UserEntity;
 import com.progex.tracker.user.repo.UserRepository;
 import com.progex.tracker.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,52 +20,56 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public UserEntity createNewUser(User user) {
+   /* @Override
+    public User createNewUser(UserDto user) {
 
         LOGGER.info("==> Creating a new user. name: [{}].", user.getName());
 
-        UserEntity userEntity = user.toEntity();
-        UserEntity savedUser = userRepository.save(userEntity);
+        User userEntity = user.toEntity();
+        User savedUser = userRepository.save(userEntity);
 
         LOGGER.info("<== New user created. name: [{}], id: [{}].", savedUser.getName(), savedUser.getId());
 
         return savedUser;
 
-    }
+    }*/
 
+/*
     @Override
-    public UserEntity updateUser(long userId, User user) {
+    public User updateUser(long userId, UserDto user) {
 
         LOGGER.info("==> Updating a user for id: [{}].", userId);
 
-        UserEntity userEntity = userRepository.findById(userId)
+        User userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    LOGGER.warn("### User not found for id: [{}].", userId);
+                    LOGGER.warn("### UserDto not found for id: [{}].", userId);
                     throw Exceptions.getUserNotFoundException(userId);
                 });
 
         userEntity.setName(user.getName());
         userEntity.setPhone(user.getPhone());
 
-        /* We do not update role list here */
+        */
+/* We do not update role list here *//*
 
-        UserEntity savedUser = userRepository.save(userEntity);
 
-        LOGGER.info("<== User updated for id: [{}] name: [{}].", savedUser.getId(), savedUser.getName());
+        User savedUser = userRepository.save(userEntity);
+
+        LOGGER.info("<== UserDto updated for id: [{}] name: [{}].", savedUser.getId(), savedUser.getName());
 
         return savedUser;
 
     }
+*/
 
-    @Override
-    public UserEntity getUserById(long userId) {
+    /*@Override
+    public User getUserById(long userId) {
 
         LOGGER.info("==> Retrieving a user for id: [{}].", userId);
 
-        UserEntity user = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    LOGGER.warn("### User not found for id: [{}].", userId);
+                    LOGGER.warn("### UserDto not found for id: [{}].", userId);
                     throw Exceptions.getUserNotFoundException(userId);
                 });
 
@@ -81,16 +80,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserEntity> getAllUsers(int offset, int limit) {
+    public List<User> getAllUsers(int offset, int limit) {
 
         LOGGER.info("==> Retrieving all users by offset=[{}] and limit=[{}].", offset, limit);
 
-        List<UserEntity> userEntities = userRepository.findAllUsers(offset, limit);
+        List<User> userEntities = userRepository.findAllUsers(offset, limit);
 
         LOGGER.info("<== Returning [{}] users.", userEntities.size());
 
         return userEntities;
 
-    }
+    }*/
 
 }

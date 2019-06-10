@@ -1,16 +1,14 @@
 package com.progex.tracker.order.service.impl;
 
-import com.progex.tracker.customer.entity.CustomerEntity;
-import com.progex.tracker.dining.entity.DiningTableEntity;
-import com.progex.tracker.order.entity.OrderEntity;
+import com.progex.tracker.customer.entity.Customer;
+import com.progex.tracker.dining.entity.DiningTable;
+import com.progex.tracker.order.entity.Order;
 import com.progex.tracker.order.repo.OrderRepository;
 import com.progex.tracker.user.entity.Cook;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 public class OrderServiceImplTest {
@@ -19,18 +17,18 @@ public class OrderServiceImplTest {
 
     @Test
     public void test(){
-        OrderEntity orderEntity = new OrderEntity();
+        Order order = new Order();
         Cook cook = new Cook();
         cook.setId(1);
-        orderEntity.setCook(cook);
-        CustomerEntity cutomerEntity = new CustomerEntity();
+        order.setCook(cook);
+        Customer cutomerEntity = new Customer();
         cutomerEntity.setId(1);
-        orderEntity.setCustomerEntity(cutomerEntity);
-        DiningTableEntity diningTbl = new DiningTableEntity();
+        order.setCustomer(cutomerEntity);
+        DiningTable diningTbl = new DiningTable();
         diningTbl.setId(1);
-        orderEntity.setDiningTable(diningTbl);
-        OrderEntity saved = orderRepository.save(orderEntity);
-        assertNotNull(saved);
+        order.setDiningTable(diningTbl);
+        Order saved = orderRepository.save(order);
+        //assertNotNull(saved);
     }
 
 }

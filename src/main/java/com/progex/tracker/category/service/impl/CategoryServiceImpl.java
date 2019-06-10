@@ -1,6 +1,6 @@
 package com.progex.tracker.category.service.impl;
 
-import com.progex.tracker.category.entity.CategoryEntity;
+import com.progex.tracker.category.entity.Category;
 import com.progex.tracker.category.repo.CategoryRepository;
 import com.progex.tracker.category.service.CategoryService;
 import com.progex.tracker.item.service.ItemService;
@@ -20,17 +20,17 @@ public class CategoryServiceImpl implements CategoryService {
     private ItemService itemService;
 
     @Override
-    public CategoryEntity insert(CategoryEntity categoryEntity) {
-        return repo.save(categoryEntity);
+    public Category insert(Category category) {
+        return repo.save(category);
     }
 
     @Override
-    public Optional<CategoryEntity> getCategoryById(int categoryId) {
+    public Optional<Category> getCategoryById(int categoryId) {
         return repo.findById(categoryId);
     }
 
     @Override
-    public List<CategoryEntity> getAllCategories(int offset, int limit) {
+    public List<Category> getAllCategories(int offset, int limit) {
         return repo.findAllCategories(offset, limit);
     }
 
@@ -40,8 +40,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryEntity update(int categoryId, CategoryEntity categoryEntity) {
-        return repo.save(categoryEntity);
+    public Category update(int categoryId, Category category) {
+        return repo.save(category);
     }
 
     public boolean isExists(int categoryId) {

@@ -1,7 +1,7 @@
 package com.progex.tracker.customer.resource;
 
-import com.progex.tracker.customer.dto.Customer;
-import com.progex.tracker.customer.entity.CustomerEntity;
+import com.progex.tracker.customer.dto.CustomerDto;
+import com.progex.tracker.customer.entity.Customer;
 import com.progex.tracker.customer.service.CustomerService;
 import com.progex.tracker.exceptions.Exceptions;
 import org.modelmapper.ModelMapper;
@@ -31,43 +31,43 @@ public class CustomerResource {
     private ModelMapper modelMapper;
 
     @GetMapping("/customers")
-    public ResponseEntity<List<Customer>> getAllCustomers(@RequestParam(value = "offset", required = true) int offset,
-                                                          @RequestParam(value = "limit", required = true) int limit) {
-        List<CustomerEntity> customerEntities = customerService.getAll(offset, limit);
+    public ResponseEntity<List<CustomerDto>> getAllCustomers(@RequestParam(value = "offset", required = true) int offset,
+                                                             @RequestParam(value = "limit", required = true) int limit) {
+        List<Customer> customerEntities = customerService.getAll(offset, limit);
         if (!customerEntities.isEmpty()) {
-            List<Customer> customers = customerEntities.stream().filter(Objects::nonNull)
+            List<CustomerDto> customerDtos = customerEntities.stream().filter(Objects::nonNull)
                     .map(customerEntity ->
-                            modelMapper.map(customerEntity, Customer.class)
+                            modelMapper.map(customerEntity, CustomerDto.class)
                     ).collect(Collectors.toList());
 
-            return ResponseEntity.ok(customers);
+            return ResponseEntity.ok(customerDtos);
         }
         LOGGER.warn("No Customers found for the given offset =[{}] , limit=[{}]", offset, limit);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/customers/{customerId}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable long customerId) {
+    public ResponseEntity<CustomerDto> getCustomerById(@PathVariable long customerId) {
         return customerService.getById(customerId).map(customer -> {
-                    Customer category = modelMapper.map(customer, Customer.class);
+                    CustomerDto category = modelMapper.map(customer, CustomerDto.class);
                     return ResponseEntity.ok().body(category);
                 }
         ).orElseThrow(() -> {
-            LOGGER.warn("No Customer found for the given id = {}", customerId);
+            LOGGER.warn("No CustomerDto found for the given id = {}", customerId);
             return Exceptions.getCustomerNotFoundException(customerId);
         });
     }
 
     @PostMapping("/customers")
-    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer) {
-        if (Objects.nonNull(customer)) {
-            CustomerEntity customerEntity = modelMapper.map(customer, CustomerEntity.class);
-            CustomerEntity insertedCustomerEntity = customerService.insert(customerEntity);
+    public ResponseEntity<CustomerDto> createCustomer(@Valid @RequestBody CustomerDto customerDTo) {
+        if (Objects.nonNull(customerDTo)) {
+            Customer customer = modelMapper.map(customerDTo, Customer.class);
+            Customer insertedCustomer = customerService.insert(customer);
             return ResponseEntity.created(URI.create(BASE_URL_STR +
-                    insertedCustomerEntity.getId())).body(modelMapper.
-                    map(insertedCustomerEntity, Customer.class));
+                    insertedCustomer.getId())).body(modelMapper.
+                    map(insertedCustomer, CustomerDto.class));
         }
-        LOGGER.warn("Null has been received to insert as customer");
+        LOGGER.warn("Null has been received to insert as customerDTo");
         return ResponseEntity.noContent().build();
     }
 

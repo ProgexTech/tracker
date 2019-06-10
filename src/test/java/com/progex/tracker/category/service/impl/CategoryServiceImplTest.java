@@ -1,6 +1,6 @@
 package com.progex.tracker.category.service.impl;
 
-import com.progex.tracker.category.entity.CategoryEntity;
+import com.progex.tracker.category.entity.Category;
 import com.progex.tracker.category.repo.CategoryRepository;
 import com.progex.tracker.category.service.CategoryService;
 import com.progex.tracker.item.repo.ItemRepository;
@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-public class CategoryEntityServiceImplTest {
+public class CategoryServiceImplTest {
 
     @MockBean
     private ItemRepository itemRepository;
@@ -55,31 +55,31 @@ public class CategoryEntityServiceImplTest {
 
     @Test
     public void shouldReturnCategoryWhenSaving() {
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setId(1);
-        categoryEntity.setName("category1");
+        Category category = new Category();
+        category.setId(1);
+        category.setName("category1");
 
-        when(categoryRepository.save(categoryEntity)).
-                thenReturn(categoryEntity);
+        when(categoryRepository.save(category)).
+                thenReturn(category);
 
-        CategoryEntity returnedCategoryEntity = categoryService.insert(categoryEntity);
-        assertNotNull(returnedCategoryEntity);
-        assertEquals(categoryEntity, returnedCategoryEntity);
+        Category returnedCategory = categoryService.insert(category);
+        assertNotNull(returnedCategory);
+        assertEquals(category, returnedCategory);
     }
 
     @Test
     public void shouldReturnCategoryWhenCallingGetByIdWithAValidCategoryId() {
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setId(1);
-        categoryEntity.setName("categoryEntity");
+        Category category = new Category();
+        category.setId(1);
+        category.setName("category");
 
-        when(categoryRepository.findById(categoryEntity.getId())).
-                thenReturn(Optional.of(categoryEntity));
+        when(categoryRepository.findById(category.getId())).
+                thenReturn(Optional.of(category));
 
-        Optional<CategoryEntity> returnedCategory = categoryService.getCategoryById(categoryEntity.getId());
+        Optional<Category> returnedCategory = categoryService.getCategoryById(category.getId());
 
         assertTrue(returnedCategory.isPresent());
-        assertEquals(categoryEntity, returnedCategory.get());
+        assertEquals(category, returnedCategory.get());
     }
 
     @Test

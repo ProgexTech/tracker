@@ -1,7 +1,7 @@
 package com.progex.tracker.order.repo;
 
-import com.progex.tracker.order.entity.OrderEntity;
+import com.progex.tracker.order.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
 }

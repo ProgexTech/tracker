@@ -1,9 +1,12 @@
 package com.progex.tracker.order.resource;
 
-import com.progex.tracker.order.dto.Order;
-import com.progex.tracker.order.entity.OrderEntity;
+import com.progex.tracker.order.dto.OrderDto;
+import com.progex.tracker.order.entity.Order;
+import com.progex.tracker.order.service.OrderService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,28 +14,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.net.URI;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
 public class OrderResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderResource.class);
+    private static final String BASE_URL_STR = "/api/orders/";
+    @Autowired
+    private ModelMapper modelMapper;
 
-    public OrderResource() {
-
-    }
+    @Autowired
+    private OrderService orderService;
 
     @PostMapping("/orders")
-    public ResponseEntity<Order> createNewUser(@Valid @RequestBody Order order) {
+    public ResponseEntity<OrderDto> placeOrder(@Valid @RequestBody OrderDto orderDto) {
 
-        LOGGER.info("Creating a new order for table: [{}].", order.getDiningTable().getId());
+        if (Objects.nonNull(orderDto)){
+            Order order = orderService.insert(modelMapper.map(orderDto, Order.class));
+            OrderDto savedOrderDto = modelMapper.map(order, OrderDto.class);
+            return ResponseEntity.created(URI.create(BASE_URL_STR +
+                    savedOrderDto.getId())).body(savedOrderDto);
+        }
+        LOGGER.warn("Failed to place the given OrderDto");
 
-        OrderEntity orderEntity = new OrderEntity();
-        Order createdOrder = Order.toDto(orderEntity);
-
-        LOGGER.info("New order created successfully, id: [{}].", orderEntity.getId());
-
-        return ResponseEntity.ok(createdOrder);
+        return ResponseEntity.noContent().build();
 
     }
 

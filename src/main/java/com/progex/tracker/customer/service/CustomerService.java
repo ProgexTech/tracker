@@ -1,18 +1,18 @@
 package com.progex.tracker.customer.service;
 
-import com.progex.tracker.customer.entity.CustomerEntity;
+import com.progex.tracker.customer.entity.Customer;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CustomerService {
 
-    CustomerEntity insert(CustomerEntity customer);
+    Customer insert(Customer customer);
 
-    Optional<CustomerEntity> getById(long customerId);
+    Optional<Customer> getById(long customerId);
 
-    CustomerEntity update(long customerId, CustomerEntity customer);
+    Customer update(long customerId, Customer customer);
 
-    List<CustomerEntity> getAll(int offset, int limit);
+    List<Customer> getAll(int offset, int limit);
 
 }

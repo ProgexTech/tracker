@@ -1,7 +1,7 @@
 package com.progex.tracker.order.service;
 
-import com.progex.tracker.order.entity.OrderEntity;
+import com.progex.tracker.order.entity.Order;
 
 public interface OrderService {
-    OrderEntity insert(OrderEntity orderEntity);
+    Order insert(Order order);
 }

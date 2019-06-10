@@ -1,6 +1,6 @@
 package com.progex.tracker.order.entity;
 
-enum Status {
+public enum Status {
     PENDING,
     PREPARING,
     READY,

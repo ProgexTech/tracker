@@ -1,7 +1,7 @@
 package com.progex.tracker.item.service;
 
-import com.progex.tracker.category.entity.CategoryEntity;
-import com.progex.tracker.item.entity.ItemEntity;
+import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.item.entity.Item;
 
 import java.util.Optional;
 
@@ -9,13 +9,13 @@ import java.util.Optional;
  * @author indunil
  */
 public interface ItemService {
-    ItemEntity insert(ItemEntity itemEntity);
+    Item insert(Item item);
 
-    Optional<ItemEntity> getItemById(int id);
+    Optional<Item> getItemById(int id);
 
-    ItemEntity update(ItemEntity itemEntity);
+    Item update(Item item);
 
-    Optional<CategoryEntity> getCategoryById(int categoryId);
+    Optional<Category> getCategoryById(int categoryId);
 
     void deleteById(int id);
 }

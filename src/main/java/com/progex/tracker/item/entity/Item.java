@@ -1,7 +1,7 @@
 package com.progex.tracker.item.entity;
 
-import com.progex.tracker.category.entity.CategoryEntity;
-import com.progex.tracker.order.entity.OrderEntity;
+import com.progex.tracker.category.entity.Category;
+import com.progex.tracker.order.entity.Order;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ItemEntity {
+public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,9 +37,9 @@ public class ItemEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    private CategoryEntity categoryEntity;
+        private Category category;
 
     @ManyToMany(mappedBy = "orderedItems")
-    private List<OrderEntity> orderEntityList;
+    private List<Order> orderList;
 
 }

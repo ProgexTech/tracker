@@ -1,19 +1,17 @@
 package com.progex.tracker.user.dto;
 
-import com.progex.tracker.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserDto {
 
     private long id;
     private List<String> roles;
@@ -22,8 +20,8 @@ public class User {
     private String phone;
     private String address;
 
-    public static User toDto(UserEntity userEntity) {
-        User user = new User();
+  /*  public static UserDto toDto(User userEntity) {
+        UserDto user = new UserDto();
 
         user.setId(userEntity.getId());
         user.setName(userEntity.getName());
@@ -33,23 +31,11 @@ public class User {
 
         return user;
     }
-
-    public static List<User> toDto(List<UserEntity> userEntities) {
+*/
+   /* public static List<UserDto> toDto(List<User> userEntities) {
         return userEntities.stream()
-                .map(User::toDto)
+                .map(UserDto::toDto)
                 .collect(Collectors.toList());
-    }
-
-    public UserEntity toEntity() {
-        UserEntity userEntity = new UserEntity();
-
-        userEntity.setId(this.id);
-        userEntity.setName(this.name);
-        userEntity.setPhone(this.phone);
-        userEntity.setAddress(this.address);
-        userEntity.setRoles(this.roles);
-
-        return userEntity;
-    }
+    }*/
 
 }
